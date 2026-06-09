@@ -3,3 +3,11 @@
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/betterCommentsSettings.xml
 .DS_Store
+Exercises/Ex03/MNIST/raw/t10k-images-idx3-ubyte
+Exercises/Ex03/MNIST/raw/t10k-images-idx3-ubyte.gz
+Exercises/Ex03/MNIST/raw/t10k-labels-idx1-ubyte
+Exercises/Ex03/MNIST/raw/t10k-labels-idx1-ubyte.gz
+Exercises/Ex03/MNIST/raw/train-images-idx3-ubyte
+Exercises/Ex03/MNIST/raw/train-images-idx3-ubyte.gz
+Exercises/Ex03/MNIST/raw/train-labels-idx1-ubyte
+Exercises/Ex03/MNIST/raw/train-labels-idx1-ubyte.gz
