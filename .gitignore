@@ -1,7 +1,4 @@
-.idea/vcs.xml
-.idea/misc.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/betterCommentsSettings.xml
+.idea/
 .DS_Store
 Exercises/Ex03/MNIST/raw/t10k-images-idx3-ubyte
 Exercises/Ex03/MNIST/raw/t10k-images-idx3-ubyte.gz
