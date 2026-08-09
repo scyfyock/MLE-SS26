@@ -1,0 +1,256 @@
+2026-08-09 03:52:02,588 [basic_agent_code] INFO: Setting up model from scratch.
+2026-08-09 03:52:02,603 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,605 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 1
+2026-08-09 03:52:02,605 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,605 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,606 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 2
+2026-08-09 03:52:02,606 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,606 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,607 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 3
+2026-08-09 03:52:02,607 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,607 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,608 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 4
+2026-08-09 03:52:02,608 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,608 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,609 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 5
+2026-08-09 03:52:02,609 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,609 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,610 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 6
+2026-08-09 03:52:02,610 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_UP, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,610 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,611 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP', 'COIN_COLLECTED' in step 7
+2026-08-09 03:52:02,611 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_UP, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,612 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,612 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 8
+2026-08-09 03:52:02,613 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_UP, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,613 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,613 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_UP' in step 9
+2026-08-09 03:52:02,614 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_UP, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,614 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,615 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 10
+2026-08-09 03:52:02,615 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,615 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,616 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 11
+2026-08-09 03:52:02,616 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,616 [basic_agent_code] DEBUG: Choosing action purely at random.
+2026-08-09 03:52:02,618 [basic_agent_code] DEBUG: Encountered game event(s) 'WAITED' in step 12
+2026-08-09 03:52:02,618 [basic_agent_code] INFO: Awarded -0.5 for events WAITED
+2026-08-09 03:52:02,618 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,619 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 13
+2026-08-09 03:52:02,619 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,619 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,620 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 14
+2026-08-09 03:52:02,620 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,621 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,622 [basic_agent_code] DEBUG: Encountered event(s) 'INVALID_ACTION', 'GOT_KILLED' in final step
+2026-08-09 03:52:02,622 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION, GOT_KILLED
+2026-08-09 03:52:02,623 [basic_agent_code] DEBUG: Choosing action purely at random.
+2026-08-09 03:52:02,624 [basic_agent_code] DEBUG: Encountered game event(s) 'WAITED', 'COIN_COLLECTED' in step 1
+2026-08-09 03:52:02,624 [basic_agent_code] INFO: Awarded 4.5 for events WAITED, COIN_COLLECTED
+2026-08-09 03:52:02,624 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,625 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 2
+2026-08-09 03:52:02,625 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_RIGHT, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,625 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,626 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 3
+2026-08-09 03:52:02,626 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_RIGHT, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,626 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,627 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 4
+2026-08-09 03:52:02,627 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_RIGHT, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,627 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,628 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 5
+2026-08-09 03:52:02,628 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_RIGHT, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,628 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,629 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 6
+2026-08-09 03:52:02,629 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_RIGHT, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,629 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,630 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT' in step 7
+2026-08-09 03:52:02,630 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_RIGHT, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,630 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,631 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_RIGHT', 'COIN_COLLECTED' in step 8
+2026-08-09 03:52:02,631 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_RIGHT, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,631 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,632 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 9
+2026-08-09 03:52:02,632 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,632 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,633 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 10
+2026-08-09 03:52:02,633 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,633 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,634 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 11
+2026-08-09 03:52:02,634 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,634 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,635 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 12
+2026-08-09 03:52:02,635 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,635 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,636 [basic_agent_code] DEBUG: Encountered event(s) 'INVALID_ACTION', 'GOT_KILLED' in final step
+2026-08-09 03:52:02,636 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION, GOT_KILLED
+2026-08-09 03:52:02,637 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,638 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 1
+2026-08-09 03:52:02,638 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_DOWN, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,638 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,639 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 2
+2026-08-09 03:52:02,639 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,639 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,640 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 3
+2026-08-09 03:52:02,640 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,640 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,641 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 4
+2026-08-09 03:52:02,641 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,641 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,642 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN', 'COIN_COLLECTED' in step 5
+2026-08-09 03:52:02,642 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_DOWN, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,642 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,643 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN', 'COIN_COLLECTED' in step 6
+2026-08-09 03:52:02,643 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_DOWN, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,643 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,644 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 7
+2026-08-09 03:52:02,644 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,644 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,644 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN', 'COIN_COLLECTED' in step 8
+2026-08-09 03:52:02,644 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_DOWN, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,645 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,645 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 9
+2026-08-09 03:52:02,645 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_DOWN, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,645 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,646 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 10
+2026-08-09 03:52:02,646 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,647 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,647 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN', 'COIN_COLLECTED' in step 11
+2026-08-09 03:52:02,647 [basic_agent_code] INFO: Awarded 5.1 for events MOVED_DOWN, COIN_COLLECTED, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,648 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,648 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 12
+2026-08-09 03:52:02,648 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,648 [basic_agent_code] DEBUG: Choosing action purely at random.
+2026-08-09 03:52:02,650 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 13
+2026-08-09 03:52:02,650 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,650 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,651 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 14
+2026-08-09 03:52:02,651 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,651 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,652 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 15
+2026-08-09 03:52:02,652 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,652 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,653 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 16
+2026-08-09 03:52:02,653 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,653 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,654 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 17
+2026-08-09 03:52:02,654 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,654 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,655 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 18
+2026-08-09 03:52:02,655 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,656 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,657 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 19
+2026-08-09 03:52:02,657 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,657 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,658 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 20
+2026-08-09 03:52:02,658 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,658 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,659 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 21
+2026-08-09 03:52:02,659 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,659 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,661 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 22
+2026-08-09 03:52:02,661 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,661 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,662 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 23
+2026-08-09 03:52:02,662 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,663 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,664 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 24
+2026-08-09 03:52:02,664 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,664 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,665 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 25
+2026-08-09 03:52:02,665 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,666 [basic_agent_code] DEBUG: Choosing action purely at random.
+2026-08-09 03:52:02,667 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 26
+2026-08-09 03:52:02,667 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,667 [basic_agent_code] DEBUG: Choosing action purely at random.
+2026-08-09 03:52:02,669 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 27
+2026-08-09 03:52:02,669 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,669 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,670 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 28
+2026-08-09 03:52:02,670 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,670 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,672 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 29
+2026-08-09 03:52:02,672 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,672 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,673 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 30
+2026-08-09 03:52:02,673 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,673 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,674 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 31
+2026-08-09 03:52:02,674 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,674 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,676 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 32
+2026-08-09 03:52:02,676 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,676 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,677 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 33
+2026-08-09 03:52:02,677 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,677 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,678 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 34
+2026-08-09 03:52:02,678 [basic_agent_code] INFO: Awarded -0.5 for events MOVED_DOWN, MOVED_NOT_TOWARD_COIN
+2026-08-09 03:52:02,678 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,679 [basic_agent_code] DEBUG: Encountered game event(s) 'MOVED_DOWN' in step 35
+2026-08-09 03:52:02,679 [basic_agent_code] INFO: Awarded 0.1 for events MOVED_DOWN, MOVED_TOWARD_COIN
+2026-08-09 03:52:02,679 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,680 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 36
+2026-08-09 03:52:02,680 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,680 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,681 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 37
+2026-08-09 03:52:02,682 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,682 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,682 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 38
+2026-08-09 03:52:02,683 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,683 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,684 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 39
+2026-08-09 03:52:02,684 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,685 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,685 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 40
+2026-08-09 03:52:02,686 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,686 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,687 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 41
+2026-08-09 03:52:02,688 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,688 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,689 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 42
+2026-08-09 03:52:02,689 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,690 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,691 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 43
+2026-08-09 03:52:02,691 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,692 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,693 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 44
+2026-08-09 03:52:02,693 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,693 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,695 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 45
+2026-08-09 03:52:02,695 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,695 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,697 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 46
+2026-08-09 03:52:02,697 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,698 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,699 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 47
+2026-08-09 03:52:02,699 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,700 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,701 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 48
+2026-08-09 03:52:02,701 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,702 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,703 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 49
+2026-08-09 03:52:02,703 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,703 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,704 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 50
+2026-08-09 03:52:02,705 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,705 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,706 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 51
+2026-08-09 03:52:02,729 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,752 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,753 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 52
+2026-08-09 03:52:02,799 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,822 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,823 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 53
+2026-08-09 03:52:02,869 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,892 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,893 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 54
+2026-08-09 03:52:02,939 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:02,962 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:02,963 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 55
+2026-08-09 03:52:03,008 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:03,031 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:03,032 [basic_agent_code] DEBUG: Encountered game event(s) 'INVALID_ACTION' in step 56
+2026-08-09 03:52:03,078 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION
+2026-08-09 03:52:03,101 [basic_agent_code] DEBUG: Querying model for action.
+2026-08-09 03:52:03,102 [basic_agent_code] DEBUG: Encountered event(s) 'INVALID_ACTION', 'GOT_KILLED' in final step
+2026-08-09 03:52:03,126 [basic_agent_code] INFO: Awarded -0.5 for events INVALID_ACTION, GOT_KILLED
