@@ -25,9 +25,9 @@ def setup(self):
 
     :param self: This object is passed to all callbacks and you can set arbitrary values.
     """
-    if self.train or not os.path.isfile("my-saved-model.pt"):
+    if self.train or not os.path.isfile("q-learning-model.pt"):
         self.logger.info("Setting up model from scratch.")
-        X = np.zeros((1, 5))
+        X = np.zeros((1, 8))
         y = np.zeros((1, 5))
         self.model = LinearRegression()
         self.model.fit(X, y)
@@ -35,7 +35,7 @@ def setup(self):
 
     else:
         self.logger.info("Loading model from saved state.")
-        with open("my-saved-model.pt", "rb") as file:
+        with open("q-learning-model.pt", "rb") as file:
             self.model = pickle.load(file)
 
 
@@ -50,7 +50,6 @@ def act(self, game_state: dict) -> str:
     """
     # todo Exploration vs exploitation
     epsilon = .1
-    feature_vector = state_to_features(game_state)
 
     if self.train and random.random() < epsilon:
         self.logger.debug("Choosing action purely at random.")
@@ -58,9 +57,16 @@ def act(self, game_state: dict) -> str:
         # return np.random.choice(ACTIONS, p=[.2, .2, .2, .2, .1, .1])
         return np.random.choice(ACTIONS, p=[.2, .2, .2, .2, .2]) # Reduced action space for coin heaven
 
+    feature_vector = state_to_features(game_state)
+
     self.logger.debug("Querying model for action.")
+
+
     q_vector = self.model.predict([feature_vector])
     argmax = np.argmax(q_vector, axis=1)[0]
+
+    self.logger.debug(f"Model chose action: {ACTIONS[argmax]}")
+    self.logger.debug(f"Coin_direction currently is: {feature_vector[0:4]}")
 
     return ACTIONS[argmax]
 
@@ -88,19 +94,23 @@ def state_to_features(game_state: dict) -> np.array:
     #   Situational awareness features, e.g. whether or not there is a wall to the left of your agent.
     #   Pathfinding features, e.g. the direction to move which brings you closest to the nearest coin.
     #   Life-saving features
+    coin_direction_onehot = [0, 0, 0, 0]
 
     pathfinding = direction_to_nearest_coin(game_state['self'], game_state['coins'], game_state['field'])
+    if pathfinding != -1:
+        coin_direction_onehot[pathfinding] = 1
+
     walls = get_adjacent_tiles(game_state['self'][3], game_state['field'])
 
     # Feature Vector
-    feature_vector = [pathfinding, walls[0][2], walls[1][2], walls[2][2], walls[3][2]]
+    feature_vector = coin_direction_onehot + [walls[0][2], walls[1][2], walls[2][2], walls[3][2]]
 
     return feature_vector
 
 # Get the direction (left, right, up, down) that leads to the closest coin using bfs
 def direction_to_nearest_coin(agent, coins, field):
     queue = deque(get_adjacent_tiles(agent[3], field))
-    visited = []
+    visited = set()
 
     # BFS to find a coin
     while queue:
@@ -115,7 +125,7 @@ def direction_to_nearest_coin(agent, coins, field):
             if neighbor[2] == 0: # If there's no wall/crate here, we can move into the tile
                 if neighbor[0] not in visited:
                     queue.append((neighbor[0], current[1], neighbor[2])) # always know tile type is 0 from earlier
-        visited.append(current[0])
+        visited.add(current[0])
 
     return -1 # No coin found in BFS
 

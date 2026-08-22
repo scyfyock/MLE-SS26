@@ -18,8 +18,9 @@ Transition = namedtuple('Transition',
 
 
 # Hyper parameters -- DO modify
-TRANSITION_HISTORY_SIZE = 5000  # keep only ... last transitions
+TRANSITION_HISTORY_SIZE = 60000  # keep only ... last transitions
 RECORD_ENEMY_TRANSITIONS = 1.0  # record enemy transitions with probability ...
+BATCH_SIZE = 100
 
 # Events
 PLACEHOLDER_EVENT = "PLACEHOLDER"
@@ -39,7 +40,7 @@ def setup_training(self):
     # (s, a, r, s')
     self.transitions = deque(maxlen=TRANSITION_HISTORY_SIZE)
     self.gamma = 0.9
-    self.batch_size = 500
+    self.batch_size = BATCH_SIZE
 
 
 def game_events_occurred(self, old_game_state: dict, self_action: str, new_game_state: dict, events: List[str]):
@@ -64,7 +65,9 @@ def game_events_occurred(self, old_game_state: dict, self_action: str, new_game_
 
     # Idea: Add your own events to hand out rewards
     old_state_features = state_to_features(old_game_state)
-    coin_direction = old_state_features[0]
+    coin_direction_onehot = old_state_features[0:4]
+    coin_direction = coin_direction_onehot.index(1) if any(coin_direction_onehot) else -1
+    self.logger.debug(f'Coin direction: {coin_direction}')
 
     # Check to see if we moved in the direction of the closest coin
     if {e.MOVED_LEFT, e.MOVED_RIGHT, e.MOVED_UP, e.MOVED_DOWN} & set(events):
@@ -102,27 +105,38 @@ def end_of_round(self, last_game_state: dict, last_action: str, events: List[str
         if r.episode not in seen:
             batch.append(r)
             seen.append(r.episode)
-        if len(seen) == self.batch_size:
-            break
+        # if len(seen) == self.batch_size:
+        #     break
 
     # sample = random.sample(self.transitions, self.batch_size)
     targets_store = []
     states_store = []
+    errors_store = []
 
+    # 9.18 weighted sampling to fix agent getting stuck at bottom of board?
     for b in batch:
-        if b.next_state == None:
+        pred = self.model.predict([b.state])[0]
+
+        if b.next_state is None:
             target = b.reward
+            td_error = abs(target - pred[ACTIONS.index(b.action)])
         else:
             target = b.reward + self.gamma * np.max(self.model.predict([b.next_state])[0])
-        pred = self.model.predict([b.state])[0]
+            model_prediction = pred[ACTIONS.index(b.action)]
+            td_error = np.abs(target - model_prediction)
         pred[ACTIONS.index(b.action)] = target      # Rewrite DIRECTIONS so we can use index?
+
         targets_store.append(pred)
         states_store.append(b.state)
+        errors_store.append(td_error)
 
-    self.model.fit(states_store, targets_store)
+    combined = list(zip(states_store, targets_store, errors_store))
+    highest_errors = sorted(combined, key=lambda x: x[2], reverse=True)[:self.batch_size]
+    states_errors, targets_errors, _ = zip(*highest_errors)
+    self.model.fit(states_errors, targets_errors)
 
     # Store the model
-    with open("my-saved-model.pt", "wb") as file:
+    with open("q-learning-model.pt", "wb") as file:
         pickle.dump(self.model, file)
 
 
@@ -136,11 +150,10 @@ def reward_from_events(self, events: List[str]) -> int:
     game_rewards = {
         e.COIN_COLLECTED: 5,
         e.WAITED: -0.5,
-        e.INVALID_ACTION: -0.5,
+        e.INVALID_ACTION: -1,
         e.KILLED_OPPONENT: 5,
-        MOVED_TOWARD_COIN: 0.1,
+        MOVED_TOWARD_COIN: -0.1,
         MOVED_NOT_TOWARD_COIN: -0.5,
-        PLACEHOLDER_EVENT: -.1  # idea: the custom event is bad
     }
     reward_sum = 0
 
@@ -148,4 +161,5 @@ def reward_from_events(self, events: List[str]) -> int:
         if event in game_rewards:
             reward_sum += game_rewards[event]
     self.logger.info(f"Awarded {reward_sum} for events {', '.join(events)}")
+
     return reward_sum
