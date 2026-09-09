@@ -7,3 +7,5 @@ Traditional simple RL problems can be run so that the agent attempts to reach th
 a -1 reward while getting to the object results in a 1 reward. The events can be used to designate rewards and attach numbers
 to each of the events stated. Mainly the box exploded, collected coin, killed opponent giving high rewards but the killed
 self event giving like -500 reward. 
+
+## Implementing ligtweight World Model
