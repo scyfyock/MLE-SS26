@@ -1,5 +1,8 @@
 import pickle
 from typing import List
+import random
+from collections import deque
+import os
 
 import events as e
 
@@ -7,6 +10,7 @@ from .callbacks import (
     ACTIONS,
     ACTION_TO_INDEX,
     MODEL_FILE,
+    MODEL_SCHEMA_VERSION,
     get_q_values,
     get_valid_actions,
     state_to_key,
@@ -27,6 +31,9 @@ MOVEMENT_EVENTS = {
 
 # Hyperparameters
 LEARNING_RATE = 0.1
+PLANNING_LEARNING_RATE = float(
+    os.environ.get("DYNA_PLANNING_ALPHA", "0.01")
+)
 DISCOUNT_FACTOR = 0.95
 
 INITIAL_EPSILON = 0.2
@@ -34,15 +41,22 @@ MIN_EPSILON = 0.02
 EPSILON_DECAY = 0.995
 
 # This remains zero until the basic Q-learning agent works.
-PLANNING_STEPS = 0
-
+PLANNING_STEPS = int(os.environ.get("DYNA_PLANNING_STEPS", "10"))
+MODEL_OUTCOMES_PER_PAIR = 100
 
 def setup_training(self):
     """Initialize parameters used only during training."""
 
     self.alpha = LEARNING_RATE
+    self.planning_alpha = PLANNING_LEARNING_RATE
     self.gamma = DISCOUNT_FACTOR
     self.planning_steps = PLANNING_STEPS
+    self.planning_rng = random.Random(1)  # Random generator for planning steps
+
+    if not hasattr(self, "world_model"):
+        self.world_model = {}
+
+    self.model_keys = list(self.world_model)
 
     # setup() may already have loaded epsilon from a saved model.
     if not hasattr(self, "epsilon"):
@@ -50,6 +64,7 @@ def setup_training(self):
 
     self.logger.info(
         f"Training setup: alpha={self.alpha}, "
+        f"planning_alpha={self.planning_alpha}, "
         f"gamma={self.gamma}, epsilon={self.epsilon}, "
         f"planning_steps={self.planning_steps}"
     )
@@ -100,6 +115,7 @@ def update_q(
     next_state,
     done: bool,
     next_valid_actions=None,
+    learning_rate=None,
 ):
     """Perform one tabular Q-learning update."""
 
@@ -122,10 +138,91 @@ def update_q(
 
     td_error = target - current_q
 
-    q_values[action_index] += self.alpha * td_error
+    alpha = self.alpha if learning_rate is None else learning_rate
+    q_values[action_index] += alpha * td_error
 
     return float(abs(td_error))
 
+def store_transition(
+    self,
+    state,
+    action,
+    reward,
+    next_state,
+    done,
+    next_valid_actions,
+):
+    """Store an observed transition in the learned world model."""
+
+    model_key = (state, action)
+
+    if model_key not in self.world_model:
+        self.world_model[model_key] = deque(
+            maxlen=MODEL_OUTCOMES_PER_PAIR
+        )
+        if not hasattr(self, "model_keys"):
+            self.model_keys = []
+        self.model_keys.append(model_key)
+
+    stored_valid_actions = (
+        tuple(next_valid_actions)
+        if next_valid_actions is not None
+        else tuple()
+    )
+
+    self.world_model[model_key].append(
+        (
+            reward,
+            next_state,
+            done,
+            stored_valid_actions,
+        )
+    )
+
+def perform_planning_updates(self):
+    """Train Q-values from transitions sampled from the world model."""
+
+    if not self.world_model:
+        return []
+
+    td_errors = []
+
+    for _ in range(self.planning_steps):
+        state, action = self.planning_rng.choice(self.model_keys)
+
+        (
+            reward,
+            next_state,
+            done,
+            stored_valid_actions,
+        ) = self.planning_rng.choice(
+            self.world_model[(state, action)]
+        )
+
+        next_valid_actions = (
+            list(stored_valid_actions)
+            if not done
+            else None
+        )
+
+        td_error = update_q(
+            self=self,
+            state=state,
+            action=action,
+            reward=reward,
+            next_state=next_state,
+            done=done,
+            next_valid_actions=next_valid_actions,
+            learning_rate=getattr(
+                self,
+                "planning_alpha",
+                self.alpha,
+            ),
+        )
+
+        td_errors.append(td_error)
+
+    return td_errors
 
 def game_events_occurred(
     self,
@@ -145,8 +242,14 @@ def game_events_occurred(
         events,
     )
 
-    state = state_to_key(old_game_state)
-    next_state = state_to_key(new_game_state)
+    state = (
+        getattr(self, "current_state_key", None)
+        or state_to_key(old_game_state)
+    )
+    next_state = state_to_key(
+        new_game_state,
+        previous_position=old_game_state["self"][3],
+    )
     reward = reward_from_events(self, events)
 
     next_valid_actions = get_valid_actions(new_game_state)
@@ -161,10 +264,29 @@ def game_events_occurred(
         next_valid_actions=next_valid_actions,
     )
 
+    store_transition(
+        self=self,
+        state=state,
+        action=self_action,
+        reward=reward,
+        next_state=next_state,
+        done=False,
+        next_valid_actions=next_valid_actions,
+    )
+
+    planning_td_errors = perform_planning_updates(self)
+
+    mean_planning_error = (
+        sum(planning_td_errors) / len(planning_td_errors)
+        if planning_td_errors
+        else 0.0
+    )
+
     self.logger.debug(
         f"Real Q-update: state={state}, action={self_action}, "
         f"reward={reward}, next_state={next_state}, "
-        f"td_error={td_error:.4f}"
+        f"td_error={td_error:.4f}, "
+        f"planning_error={mean_planning_error:.4f}"
     )
 
 
@@ -183,7 +305,10 @@ def end_of_round(
             events,
         )
 
-        state = state_to_key(last_game_state)
+        state = (
+            getattr(self, "current_state_key", None)
+            or state_to_key(last_game_state)
+        )
         reward = reward_from_events(self, events)
 
         td_error = update_q(
@@ -195,11 +320,32 @@ def end_of_round(
             done=True,
         )
 
-        self.logger.debug(
-            f"Terminal Q-update: state={state}, "
-            f"action={last_action}, reward={reward}, "
-            f"td_error={td_error:.4f}"
+        store_transition(
+            self=self,
+            state=state,
+            action=last_action,
+            reward=reward,
+            next_state=None,
+            done=True,
+            next_valid_actions=None,
         )
+
+        planning_td_errors = perform_planning_updates(self)
+
+        mean_planning_error = (
+            sum(planning_td_errors) / len(planning_td_errors)
+            if planning_td_errors
+            else 0.0
+        )
+
+        self.logger.debug(
+            f"Terminal Q-update: state={state}, action={last_action}, "
+            f"reward={reward}, td_error={td_error:.4f}, "
+            f"planning_error={mean_planning_error:.4f}"
+        )
+
+    self.previous_position = None
+    self.current_state_key = None
 
     self.epsilon = max(
         MIN_EPSILON,
@@ -239,7 +385,9 @@ def save_model(self):
     """Persist everything required to continue training."""
 
     saved_data = {
+        "model_schema_version": MODEL_SCHEMA_VERSION,
         "q_table": self.q_table,
+        "world_model": self.world_model,
         "epsilon": self.epsilon,
     }
 
@@ -252,5 +400,6 @@ def save_model(self):
 
     self.logger.info(
         f"Saved {len(self.q_table)} Q-table states "
+        f"{len(self.world_model)} model state-action pairs, "
         f"with epsilon={self.epsilon:.4f}."
     )

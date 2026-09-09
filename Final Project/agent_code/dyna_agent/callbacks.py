@@ -14,16 +14,21 @@ ACTION_TO_INDEX = {
     for index, action in enumerate(ACTIONS)
 }
 
-MODEL_FILE = "dyna-model.pt" 
+MODEL_FILE = os.environ.get("DYNA_MODEL_FILE", "dyna-model.pt")
+MODEL_SCHEMA_VERSION = 3
+MAX_COIN_DISTANCE_BUCKET = 4
 
 def setup(self):
     """Load an existing Dyna agent or initialize an empty Q-table."""
 
     # generate a random number generator with a fixed seed for reproducibility
-    self.rng = random.Random(0)
+    self.action_rng = random.Random(0)
 
     self.epsilon = 0.2
     self.q_table = {}
+    self.world_model = {}
+    self.previous_position = None
+    self.current_state_key = None
 
     if os.path.isfile(MODEL_FILE):
         self.logger.info("Loading existing Dyna model.")
@@ -31,18 +36,34 @@ def setup(self):
         with open(MODEL_FILE, "rb") as file:
             saved_data = pickle.load(file)
 
+        saved_version = saved_data.get("model_schema_version", 1)
+
+        if saved_version != MODEL_SCHEMA_VERSION:
+            self.logger.warning(
+                "Ignoring incompatible Dyna model schema "
+                f"{saved_version}; expected {MODEL_SCHEMA_VERSION}. "
+                "A fresh model will be trained."
+            )
+            return
+
         self.q_table = saved_data["q_table"]
+        self.world_model = saved_data["world_model"]
         self.epsilon = saved_data.get("epsilon", self.epsilon)
     else:
         self.logger.info("Initializing an empty Q-table.")
 
 def act(self, game_state: dict) -> str:
-    state = state_to_key(game_state)
+    state = state_to_key(
+        game_state,
+        previous_position=self.previous_position,
+    )
     valid_actions = get_valid_actions(game_state)
+    self.current_state_key = state
+    self.previous_position = game_state["self"][3]
 
     # Exploration nur während des Trainings.
-    if self.train and self.rng.random() < self.epsilon:
-        action = self.rng.choice(valid_actions)
+    if self.train and self.action_rng.random() < self.epsilon:
+        action = self.action_rng.choice(valid_actions)
         self.logger.debug(f"Exploration selected {action}.")
         return action
 
@@ -62,7 +83,7 @@ def act(self, game_state: dict) -> str:
         if np.isclose(value, best_value)
     ]
 
-    action = self.rng.choice(best_actions)
+    action = self.action_rng.choice(best_actions)
 
     self.logger.debug(
         f"State={state}, valid={valid_actions}, "
@@ -71,7 +92,10 @@ def act(self, game_state: dict) -> str:
 
     return action
 
-def state_to_features(game_state: dict) -> np.array:
+def state_to_features(
+    game_state: dict,
+    previous_position=None,
+) -> np.array:
     """
     *This is not a required function, but an idea to structure your code.*
 
@@ -96,23 +120,47 @@ def state_to_features(game_state: dict) -> np.array:
     #   Life-saving features
     coin_direction_onehot = [0, 0, 0, 0]
 
-    pathfinding = direction_to_nearest_coin(game_state['self'], game_state['coins'], game_state['field'])
-    if pathfinding != -1:
-        coin_direction_onehot[pathfinding] = 1
+    coin_direction, coin_distance = nearest_coin_info(
+        game_state["self"],
+        game_state["coins"],
+        game_state["field"],
+    )
+    if coin_direction != -1:
+        coin_direction_onehot[coin_direction] = 1
 
-    walls = get_adjacent_tiles(game_state['self'][3], game_state['field'])
+    position = game_state["self"][3]
+    walls = get_adjacent_tiles(position, game_state["field"])
+    previous_tile_direction_onehot = [0, 0, 0, 0]
 
-    # Feature Vector
-    feature_vector = coin_direction_onehot + [walls[0][2], walls[1][2], walls[2][2], walls[3][2]]
+    if previous_position is not None:
+        for neighbor, direction, _tile_type in walls:
+            if neighbor == previous_position:
+                previous_tile_direction_onehot[direction] = 1
+                break
+
+    # The previous tile distinguishes immediate backtracking without tying the
+    # policy to absolute coordinates. Distance is clipped to keep the table
+    # compact while preserving the useful near/far signal.
+    feature_vector = coin_direction_onehot + [
+        walls[0][2],
+        walls[1][2],
+        walls[2][2],
+        walls[3][2],
+    ] + previous_tile_direction_onehot + [
+        min(coin_distance, MAX_COIN_DISTANCE_BUCKET),
+    ]
 
     return feature_vector
 
-def state_to_key(game_state):
+def state_to_key(game_state, previous_position=None):
     """Convert a game state into a hashable tabular state."""
     if game_state is None:
         return None
 
-    features = state_to_features(game_state)
+    features = state_to_features(
+        game_state,
+        previous_position=previous_position,
+    )
     return tuple(int(value) for value in features)
 
 def get_q_values(self, state):
@@ -126,27 +174,48 @@ def get_q_values(self, state):
 
     return self.q_table[state]
 
-# Get the direction (left, right, up, down) that leads to the closest coin using bfs
-def direction_to_nearest_coin(agent, coins, field):
-    queue = deque(get_adjacent_tiles(agent[3], field))
-    visited = set()
+def nearest_coin_info(agent, coins, field):
+    """Return the first action and shortest-path distance to the nearest coin."""
 
-    # BFS to find a coin
+    if not coins:
+        return -1, 0
+
+    start = agent[3]
+    queue = deque()
+    visited = {start}
+
+    for position, direction, tile_type in get_adjacent_tiles(start, field):
+        if tile_type == 0 and position not in visited:
+            queue.append((position, direction, 1))
+            visited.add(position)
+
     while queue:
-        current = queue.popleft()
-        if current[0] in coins:
-            return current[1]
-        if current[2] != -1:
-            neighbors = get_adjacent_tiles(current[0], field)
-        else:
-            continue
-        for neighbor in neighbors:
-            if neighbor[2] == 0: # If there's no wall/crate here, we can move into the tile
-                if neighbor[0] not in visited:
-                    queue.append((neighbor[0], current[1], neighbor[2])) # always know tile type is 0 from earlier
-        visited.add(current[0])
+        position, first_direction, distance = queue.popleft()
 
-    return -1 # No coin found in BFS
+        if position in coins:
+            return first_direction, distance
+
+        for neighbor, _direction, tile_type in get_adjacent_tiles(
+            position,
+            field,
+        ):
+            if tile_type == 0 and neighbor not in visited:
+                queue.append(
+                    (
+                        neighbor,
+                        first_direction,
+                        distance + 1,
+                    )
+                )
+                visited.add(neighbor)
+
+    return -1, 0
+
+
+# Kept as a small compatibility helper for callers interested only in direction.
+def direction_to_nearest_coin(agent, coins, field):
+    direction, _distance = nearest_coin_info(agent, coins, field)
+    return direction
 
 def get_valid_actions(game_state):
     """Return actions that can mechanically be executed."""
