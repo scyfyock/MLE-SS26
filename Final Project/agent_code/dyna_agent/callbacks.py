@@ -6,7 +6,7 @@ from collections import deque
 import numpy as np
 
 # ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
-ACTIONS = ["UP", "RIGHT", "DOWN", "LEFT", "WAIT"]
+ACTIONS = ["UP", "RIGHT", "DOWN", "LEFT", "WAIT", "BOMB"]
 
 
 ACTION_TO_INDEX = {
@@ -14,8 +14,11 @@ ACTION_TO_INDEX = {
     for index, action in enumerate(ACTIONS)
 }
 
-MODEL_FILE = os.environ.get("DYNA_MODEL_FILE", "dyna-model.pt")
-MODEL_SCHEMA_VERSION = 3
+MODEL_FILE = os.environ.get(
+    "DYNA_MODEL_FILE",
+    "dyna-model-v4-bombs.pt",
+)
+MODEL_SCHEMA_VERSION = 4
 MAX_COIN_DISTANCE_BUCKET = 4
 
 def setup(self):
@@ -248,6 +251,12 @@ def get_valid_actions(game_state):
 
     # WAIT ist mechanisch immer möglich.
     valid_actions.append("WAIT")
+
+    # The environment accepts BOMB only while the agent has one available.
+    # Checking the current tile as well keeps this helper consistent with the
+    # occupied-tile representation used for movement.
+    if game_state["self"][2] and (x, y) not in occupied:
+        valid_actions.append("BOMB")
 
     return valid_actions
 

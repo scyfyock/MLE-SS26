@@ -5,6 +5,7 @@ from collections import deque
 import os
 
 import events as e
+import settings as s
 
 from .callbacks import (
     ACTIONS,
@@ -20,6 +21,8 @@ from .callbacks import (
 # Custom events
 MOVED_TOWARD_COIN = "MOVED_TOWARD_COIN"
 MOVED_NOT_TOWARD_COIN = "MOVED_NOT_TOWARD_COIN"
+USEFUL_BOMB = "USEFUL_BOMB"
+USELESS_BOMB = "USELESS_BOMB"
 
 MOVEMENT_EVENTS = {
     e.MOVED_LEFT,
@@ -80,31 +83,68 @@ def add_custom_events(
     if old_game_state is None:
         return
 
-    if not MOVEMENT_EVENTS.intersection(events):
-        return
+    if MOVEMENT_EVENTS.intersection(events):
+        old_state = state_to_key(old_game_state)
+        coin_features = old_state[:4]
 
-    if self_action not in ACTION_TO_INDEX:
-        return
+        coin_direction = next(
+            (
+                index
+                for index, value in enumerate(coin_features)
+                if value == 1
+            ),
+            None,
+        )
 
-    old_state = state_to_key(old_game_state)
-    coin_features = old_state[:4]
+        if coin_direction is not None:
+            if ACTION_TO_INDEX[self_action] == coin_direction:
+                events.append(MOVED_TOWARD_COIN)
+            else:
+                events.append(MOVED_NOT_TOWARD_COIN)
 
-    coin_direction = next(
-        (
-            index
-            for index, value in enumerate(coin_features)
-            if value == 1
-        ),
-        None,
+    # Only score bombs which the environment actually accepted. This avoids
+    # classifying an attempted BOMB without ammunition as a useful placement.
+    if self_action == "BOMB" and e.BOMB_DROPPED in events:
+        if bomb_would_hit_target(old_game_state):
+            events.append(USEFUL_BOMB)
+        else:
+            events.append(USELESS_BOMB)
+
+
+def bomb_would_hit_target(game_state: dict) -> bool:
+    """Return whether a bomb here can hit a crate or current opponent.
+
+    The ray casting deliberately matches ``Bomb.get_blast_coords`` in
+    items.py: stone walls stop a blast, while crates do not stop subsequent
+    blast tiles in this version of the environment.
+    """
+
+    field = game_state["field"]
+    x, y = game_state["self"][3]
+    opponent_positions = {
+        other[3]
+        for other in game_state["others"]
+    }
+
+    directions = (
+        (1, 0),
+        (-1, 0),
+        (0, 1),
+        (0, -1),
     )
 
-    if coin_direction is None:
-        return
+    for dx, dy in directions:
+        for distance in range(1, s.BOMB_POWER + 1):
+            position = (x + dx * distance, y + dy * distance)
+            tile_type = field[position]
 
-    if ACTION_TO_INDEX[self_action] == coin_direction:
-        events.append(MOVED_TOWARD_COIN)
-    else:
-        events.append(MOVED_NOT_TOWARD_COIN)
+            if tile_type == -1:
+                break
+
+            if tile_type == 1 or position in opponent_positions:
+                return True
+
+    return False
 
 
 def update_q(
@@ -363,10 +403,18 @@ def reward_from_events(
 
     rewards = {
         e.COIN_COLLECTED: 5.0,
+        e.CRATE_DESTROYED: 1.0,
+        e.COIN_FOUND: 0.5,
+        e.KILLED_OPPONENT: 5.0,
+        e.KILLED_SELF: -10.0,
+        e.GOT_KILLED: -5.0,
+        e.SURVIVED_ROUND: 1.0,
         e.WAITED: -0.5,
         e.INVALID_ACTION: -1.0,
         MOVED_TOWARD_COIN: -0.1,
         MOVED_NOT_TOWARD_COIN: -0.5,
+        USEFUL_BOMB: 0.5,
+        USELESS_BOMB: -1.0,
     }
 
     reward = sum(
