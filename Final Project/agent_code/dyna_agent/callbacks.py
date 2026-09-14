@@ -5,8 +5,8 @@ from collections import deque
 
 import numpy as np
 
-# ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
-ACTIONS = ["UP", "RIGHT", "DOWN", "LEFT", "WAIT", "BOMB"]
+ACTIONS = ['UP', 'RIGHT', 'DOWN', 'LEFT', 'WAIT', 'BOMB']
+MVMT_ACTIONS = ["UP", "RIGHT", "DOWN", "LEFT"]
 
 
 ACTION_TO_INDEX = {
@@ -14,11 +14,8 @@ ACTION_TO_INDEX = {
     for index, action in enumerate(ACTIONS)
 }
 
-MODEL_FILE = os.environ.get(
-    "DYNA_MODEL_FILE",
-    "dyna-model-v4-bombs.pt",
-)
-MODEL_SCHEMA_VERSION = 4
+MODEL_FILE = os.environ.get("DYNA_MODEL_FILE", "dyna-model.pt")
+MODEL_SCHEMA_VERSION = 7
 MAX_COIN_DISTANCE_BUCKET = 4
 
 def setup(self):
@@ -128,6 +125,14 @@ def state_to_features(
         game_state["coins"],
         game_state["field"],
     )
+
+    crate_direction, crate_distance = nearest_crate_info(
+        game_state["self"],
+        game_state["field"],
+        game_state['explosion_map'],
+        game_state['bombs']
+    )
+
     if coin_direction != -1:
         coin_direction_onehot[coin_direction] = 1
 
@@ -141,16 +146,54 @@ def state_to_features(
                 previous_tile_direction_onehot[direction] = 1
                 break
 
+    # Get bomb countdown for current agent's tile
+    current_agent_countdown = current_bomb_timer(game_state['self'][3], game_state['field'], game_state['bombs'])
+
+    # Get the number of bombable crates if the agent dropped a bomb at it's current tile
+    bombable_crates = check_bombable_crates(game_state['self'][3], game_state['field'])
+    if bombable_crates > 0:
+        bombable_crates = 1
+
+    # Get the direction out of a bomb's way
+    safety_direction_onehot = [0, 0, 0, 0]
+    safety_direction = -1
+    if current_agent_countdown != -1:
+        safety_direction = direction_to_safety(game_state['self'][3], game_state['field'], game_state['bombs'], game_state['explosion_map'])
+
+    # Check if a safe spot exists if a bomb is placed this instant
+    safety_exists = 0
+    if bombable_crates != 0:
+        fake_bombs = game_state['bombs'] + [(game_state['self'][3], 3)]
+        if direction_to_safety(game_state['self'][3], game_state['field'], fake_bombs, game_state['explosion_map']) != -1:
+            safety_exists = 1
+        else:
+            safety_exists = 2
+
+    if safety_direction != -1:
+        safety_direction_onehot[safety_direction] = 1
+
+    valid_check = [0, 0, 0, 0]
+    valid_actions = get_valid_actions(game_state)
+    for a in valid_actions:
+        if a in MVMT_ACTIONS:
+            valid_check[MVMT_ACTIONS.index(a)] = 1
+
+    bomb_ticking = 0 if game_state['self'][2] else 1
+
     # The previous tile distinguishes immediate backtracking without tying the
     # policy to absolute coordinates. Distance is clipped to keep the table
     # compact while preserving the useful near/far signal.
     feature_vector = coin_direction_onehot + [
-        walls[0][2],
-        walls[1][2],
-        walls[2][2],
-        walls[3][2],
-    ] + previous_tile_direction_onehot + [
-        min(coin_distance, MAX_COIN_DISTANCE_BUCKET),
+        bombable_crates,
+        # walls[0][2],
+        # walls[1][2],
+        # walls[2][2],
+        # walls[3][2],
+    ] + valid_check + previous_tile_direction_onehot + safety_direction_onehot + [
+        safety_exists,
+        crate_direction,
+        bomb_ticking
+        # min(coin_distance, MAX_COIN_DISTANCE_BUCKET),
     ]
 
     return feature_vector
@@ -214,6 +257,53 @@ def nearest_coin_info(agent, coins, field):
 
     return -1, 0
 
+def nearest_crate_info(agent, field, explosion_map, bombs):
+    """Return the first action and shortest-path distance to the nearest tile where placing a bomb on that tile
+        hits a crate, and leaves an escape route for the agent"""
+
+    bomb_array = [b for b, _ in bombs]
+    start = agent[3]
+    queue = deque()
+    visited = {start}
+
+    # Checks if the starting spot of the agent is a good spot to bomb right now
+    # (Note: direction_to_safety doesn't check distance to safety and fuse, to be added later)
+    if (check_bombable_crates(start, field) > 0
+            and direction_to_safety(start, field, bombs + [(start, 3)], explosion_map) != -1):
+        return -1, 0
+
+    # Go through tiles that are walkable (not wall/crate or explosions/bombs) and add them into the queue
+    for position, direction, tile_type in get_adjacent_tiles(start, field):
+        if tile_type == 0 and position not in visited and position not in bomb_array and explosion_map[position] == 0:
+            queue.append((position, direction, 1))
+            visited.add(position)
+
+    # BFS and for each tile recheck if the tile is a good spot to bomb right now
+    while queue:
+        position, first_direction, distance = queue.popleft()
+        fake_bombs = bombs + [(position, 3)]
+
+        # Same as first initial check: Should I bomb here?
+        if check_bombable_crates(position, field) > 0 and direction_to_safety(position, field, fake_bombs, explosion_map) != -1:
+            return first_direction, distance
+
+        for neighbor, _direction, tile_type in get_adjacent_tiles(
+            position,
+            field,
+        ):
+            if tile_type == 0 and neighbor not in visited and neighbor not in bomb_array:
+                if field[neighbor] == 0 and explosion_map[neighbor] == 0:
+                    queue.append(
+                        (
+                            neighbor,
+                            first_direction,
+                            distance + 1,
+                        )
+                    )
+                    visited.add(neighbor)
+
+    # Return if no viable tiles are found
+    return -1, 0
 
 # Kept as a small compatibility helper for callers interested only in direction.
 def direction_to_nearest_coin(agent, coins, field):
@@ -224,6 +314,7 @@ def get_valid_actions(game_state):
     """Return actions that can mechanically be executed."""
 
     field = game_state["field"]
+    explosions = game_state["explosion_map"]
     x, y = game_state["self"][3]
 
     occupied = {
@@ -246,7 +337,7 @@ def get_valid_actions(game_state):
     valid_actions = []
 
     for action, destination in destinations.items():
-        if field[destination] == 0 and destination not in occupied:
+        if field[destination] == 0 and destination not in occupied and explosions[destination] == 0:
             valid_actions.append(action)
 
     # WAIT ist mechanisch immer möglich.
@@ -270,10 +361,142 @@ def get_adjacent_tiles(coord, field):
     up = field[coord[0], coord[1] - 1]
 
     # Tiles are 0 if movable too, 1 for crates, and -1 for walls.
-    # for adj_tiles[1] using 0 for LEFT, 1 for RIGHT, 2 for DOWN, and 3 for UP, -1 for no coin direction
+    # for adj_tiles[1] using 0 for UP, 1 for RIGHT, 2 for DOWN, and 3 for LEFT, -1 for no coin direction
     adjacent_tiles = [((coord[0] - 1, coord[1]), ACTION_TO_INDEX['LEFT'], left),
                       ((coord[0] + 1, coord[1]), ACTION_TO_INDEX['RIGHT'], right),
                       ((coord[0], coord[1] + 1), ACTION_TO_INDEX['DOWN'], down),
                       ((coord[0], coord[1] - 1), ACTION_TO_INDEX['UP'], up)]
 
     return adjacent_tiles
+
+# Look through all the active bombs on the board and get the timer of the first bomb found that intersects with the agent
+def current_bomb_timer(coord, board, bombs):
+    live_bombs = []
+
+    for (x,y), timer in bombs:
+        # Check directly on the bomb
+        if (x, y) == coord:
+            live_bombs.append(timer)
+
+        # Check four blast paths of bomb
+        for lt in range(1,4):
+            if board[x - lt, y] == -1:
+                break
+            elif (x - lt, y) == coord:
+                live_bombs.append(timer)
+                break
+
+        for rt in range(1,4):
+            if board[x + rt, y] == -1:
+                break
+            elif (x + rt, y) == coord:
+                live_bombs.append(timer)
+                break
+
+        for dn in range(1,4):
+            if board[x, y + dn] == -1:
+                break
+            elif (x, y + dn) == coord:
+                live_bombs.append(timer)
+                break
+
+        for up in range(1,4):
+            if board[x, y - up] == -1:
+                break
+            elif (x, y - up) == coord:
+                live_bombs.append(timer)
+                break
+
+    if len(live_bombs) == 0:
+        return -1
+    else:
+        return min(live_bombs)
+
+# Get the number of bombable crates if the agent dropped a bomb at it's current tile
+# based on the get_blast_coords function in items.py
+def check_bombable_crates(coord, board):
+    # dir = [left, right, down, up]
+    directions = [0, 0, 0, 0]
+
+    for lt in range(1, 4):
+        if board[coord[0] - lt, coord[1]] == -1:
+            break
+        elif board[coord[0] - lt, coord[1]] == 1:
+            directions[0] += 1
+
+    for rt in range(1, 4):
+        if board[coord[0] + rt, coord[1]] == -1:
+            break
+        elif board[coord[0] + rt, coord[1]] == 1:
+            directions[1] += 1
+
+    for dn in range(1, 4):
+        if board[coord[0], coord[1] + dn] == -1:
+            break
+        elif board[coord[0], coord[1] + dn] == 1:
+            directions[2] += 1
+
+    for up in range(1, 4):
+        if board[coord[0], coord[1] - up] == -1:
+            break
+        elif board[coord[0], coord[1] - up] == 1:
+            directions[3] += 1
+
+    return sum(directions)
+
+# Similar to direction to nearest coin, get the direction to a tile that is not currently being bombed
+# Does not track fuse time of bomb, or if safety can be reached in time for explosion
+def direction_to_safety(coord, board, bombs, explosion_map):
+    queue = deque(get_adjacent_tiles(coord, board))
+    visited = set()
+
+    danger_map = set(tuple(coord) for coord in np.argwhere(explosion_map > 0))
+    bomb_coords = [b for b, _ in bombs]
+
+    for (x,y), timer in bombs:
+        # Add the bomb directly
+        danger_map.add((x, y))
+
+        # Check four blast paths of bomb
+        for lt in range(1,4):
+            if board[x - lt, y] == -1:
+                break
+            else:
+                danger_map.add((x - lt, y))
+
+        for rt in range(1,4):
+            if board[x + rt, y] == -1:
+                break
+            else:
+                danger_map.add((x + rt, y))
+
+        for dn in range(1,4):
+            if board[x, y + dn] == -1:
+                break
+            else:
+                danger_map.add((x, y + dn))
+
+        for up in range(1,4):
+            if board[x, y - up] == -1:
+                break
+            else:
+                danger_map.add((x, y - up))
+
+    while queue:
+        current = queue.popleft()
+
+        if current[2] == 0 and explosion_map[current[0]] == 0 and current[0] not in bomb_coords:
+            if current[0] not in danger_map:
+                return current[1]
+            neighbors = get_adjacent_tiles(current[0], board)
+        else:
+            continue
+
+        for neighbor in neighbors:
+            if neighbor[2] == 0: # If there's no wall/crate here, we can move into the tile
+                if neighbor[0] not in visited:
+                    queue.append((neighbor[0], current[1], neighbor[2])) # always know tile type is 0 from earlier
+
+        visited.add(current[0]) # Add to visited bfs queue
+
+    return -1

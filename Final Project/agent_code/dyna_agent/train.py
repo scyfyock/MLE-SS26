@@ -21,8 +21,13 @@ from .callbacks import (
 # Custom events
 MOVED_TOWARD_COIN = "MOVED_TOWARD_COIN"
 MOVED_NOT_TOWARD_COIN = "MOVED_NOT_TOWARD_COIN"
-USEFUL_BOMB = "USEFUL_BOMB"
-USELESS_BOMB = "USELESS_BOMB"
+MOVED_TOWARD_CRATE = "MOVED_TOWARD_CRATE"
+MOVED_NOT_TOWARD_CRATE = "MOVED_NOT_TOWARD_CRATE"
+CHOSE_TO_BOMB_CRATES = "CHOSE_TO_BOMB_CRATES"
+MOVED_TOWARD_SAFETY = "MOVED_TOWARD_SAFETY"
+MOVED_NOT_TOWARD_SAFETY = "MOVED_NOT_TOWARD_SAFETY"
+BOMBED_NOTHING = "BOMBED_NOTHING"
+
 
 MOVEMENT_EVENTS = {
     e.MOVED_LEFT,
@@ -30,7 +35,6 @@ MOVEMENT_EVENTS = {
     e.MOVED_UP,
     e.MOVED_DOWN,
 }
-
 
 # Hyperparameters
 LEARNING_RATE = 0.1
@@ -40,7 +44,7 @@ PLANNING_LEARNING_RATE = float(
 DISCOUNT_FACTOR = 0.95
 
 INITIAL_EPSILON = 0.2
-MIN_EPSILON = 0.02
+MIN_EPSILON = 0.05
 EPSILON_DECAY = 0.995
 
 # This remains zero until the basic Q-learning agent works.
@@ -75,17 +79,42 @@ def setup_training(self):
 
 def add_custom_events(
     old_game_state: dict,
+    new_game_state: dict,
     self_action: str,
     events: List[str],
 ):
-    """Add events describing whether a movement followed the coin direction."""
+    """Add events describing whether a movement followed the coin & crate direction."""
 
     if old_game_state is None:
         return
 
+    old_state = state_to_key(old_game_state)
+    # new_state = state_to_key(new_game_state)
+
+    safety_exists = old_state[17]
+
+    # Score bombs based on whether they are dropped near crates and dropped when the agent has a place
+    # to escape to. Demark agent if it chooses to bomb nothing.
+    if e.BOMB_DROPPED in events and safety_exists == 1 and not any(old_state[13:17]):
+        events.append(CHOSE_TO_BOMB_CRATES)
+    elif e.BOMB_DROPPED in events and old_state[4] == 0:
+        events.append(BOMBED_NOTHING)
+
     if MOVEMENT_EVENTS.intersection(events):
-        old_state = state_to_key(old_game_state)
         coin_features = old_state[:4]
+        crate_direction = old_state[18]
+
+        safety_direction_onehot = old_state[13:17]
+
+        # Remake the onehot into just a single integer -1 through 3 to indicate direction to line up with ACTION_TO_INDEX
+        safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
+
+        # Check if agent is moving towards safety or into blasts
+        if safety_direction != -1:
+            if ACTION_TO_INDEX[self_action] == safety_direction:
+                events.append(MOVED_TOWARD_SAFETY)
+            else:
+                events.append(MOVED_NOT_TOWARD_SAFETY)
 
         coin_direction = next(
             (
@@ -96,56 +125,56 @@ def add_custom_events(
             None,
         )
 
+        # To prevent the agent from being aimless, gives the agent the direction to a tile that when bombed
+        # hits a crate, and also leaves a space for it to escape from
+        if crate_direction != -1:
+            if ACTION_TO_INDEX[self_action] == crate_direction:
+                events.append(MOVED_TOWARD_CRATE)
+            else:
+                events.append(MOVED_NOT_TOWARD_CRATE)
+
+        # Guide agent towards the nearest coin
         if coin_direction is not None:
             if ACTION_TO_INDEX[self_action] == coin_direction:
                 events.append(MOVED_TOWARD_COIN)
             else:
                 events.append(MOVED_NOT_TOWARD_COIN)
 
-    # Only score bombs which the environment actually accepted. This avoids
-    # classifying an attempted BOMB without ammunition as a useful placement.
-    if self_action == "BOMB" and e.BOMB_DROPPED in events:
-        if bomb_would_hit_target(old_game_state):
-            events.append(USEFUL_BOMB)
-        else:
-            events.append(USELESS_BOMB)
 
-
-def bomb_would_hit_target(game_state: dict) -> bool:
-    """Return whether a bomb here can hit a crate or current opponent.
-
-    The ray casting deliberately matches ``Bomb.get_blast_coords`` in
-    items.py: stone walls stop a blast, while crates do not stop subsequent
-    blast tiles in this version of the environment.
-    """
-
-    field = game_state["field"]
-    x, y = game_state["self"][3]
-    opponent_positions = {
-        other[3]
-        for other in game_state["others"]
-    }
-
-    directions = (
-        (1, 0),
-        (-1, 0),
-        (0, 1),
-        (0, -1),
-    )
-
-    for dx, dy in directions:
-        for distance in range(1, s.BOMB_POWER + 1):
-            position = (x + dx * distance, y + dy * distance)
-            tile_type = field[position]
-
-            if tile_type == -1:
-                break
-
-            if tile_type == 1 or position in opponent_positions:
-                return True
-
-    return False
-
+# def bomb_would_hit_target(game_state: dict) -> bool:
+#     """Return whether a bomb here can hit a crate or current opponent.
+#
+#     The ray casting deliberately matches ``Bomb.get_blast_coords`` in
+#     items.py: stone walls stop a blast, while crates do not stop subsequent
+#     blast tiles in this version of the environment.
+#     """
+#
+#     field = game_state["field"]
+#     x, y = game_state["self"][3]
+#     opponent_positions = {
+#         other[3]
+#         for other in game_state["others"]
+#     }
+#
+#     directions = (
+#         (1, 0),
+#         (-1, 0),
+#         (0, 1),
+#         (0, -1),
+#     )
+#
+#     for dx, dy in directions:
+#         for distance in range(1, s.BOMB_POWER + 1):
+#             position = (x + dx * distance, y + dy * distance)
+#             tile_type = field[position]
+#
+#             if tile_type == -1:
+#                 break
+#
+#             if tile_type == 1 or position in opponent_positions:
+#                 return True
+#
+#     return False
 
 def update_q(
     self,
@@ -278,6 +307,7 @@ def game_events_occurred(
 
     add_custom_events(
         old_game_state,
+        new_game_state,
         self_action,
         events,
     )
@@ -341,6 +371,7 @@ def end_of_round(
     if last_game_state is not None and last_action in ACTION_TO_INDEX:
         add_custom_events(
             last_game_state,
+            None,
             last_action,
             events,
         )
@@ -402,20 +433,25 @@ def reward_from_events(
     """Convert game events into a scalar training reward."""
 
     rewards = {
-        e.COIN_COLLECTED: 5.0,
-        e.CRATE_DESTROYED: 1.0,
-        e.COIN_FOUND: 0.5,
-        e.KILLED_OPPONENT: 5.0,
-        e.KILLED_SELF: -10.0,
-        e.GOT_KILLED: -5.0,
-        e.SURVIVED_ROUND: 1.0,
         e.WAITED: -0.5,
-        e.INVALID_ACTION: -1.0,
-        MOVED_TOWARD_COIN: -0.1,
+        e.INVALID_ACTION: -2.0,
+        e.KILLED_SELF: -15,
+        e.SURVIVED_ROUND: 1,
+
+        CHOSE_TO_BOMB_CRATES: 2,
+        e.CRATE_DESTROYED: 1,
+        MOVED_TOWARD_CRATE: 0.5,
+        MOVED_NOT_TOWARD_CRATE: -0.5,
+        BOMBED_NOTHING: -2,
+
+        e.COIN_COLLECTED: 5.0,
+        MOVED_TOWARD_COIN: 0.1,
         MOVED_NOT_TOWARD_COIN: -0.5,
-        USEFUL_BOMB: 0.5,
-        USELESS_BOMB: -1.0,
+
+        MOVED_NOT_TOWARD_SAFETY: -2,
+        MOVED_TOWARD_SAFETY: 0.1,
     }
+
 
     reward = sum(
         rewards.get(event, 0.0)
