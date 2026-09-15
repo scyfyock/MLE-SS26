@@ -27,7 +27,11 @@ CHOSE_TO_BOMB_CRATES = "CHOSE_TO_BOMB_CRATES"
 MOVED_TOWARD_SAFETY = "MOVED_TOWARD_SAFETY"
 MOVED_NOT_TOWARD_SAFETY = "MOVED_NOT_TOWARD_SAFETY"
 BOMBED_NOTHING = "BOMBED_NOTHING"
+BOMBED_MANY_CRATES = "BOMBED_MANY_CRATES"
+CHOSE_NOT_TO_BOMB = "CHOSE_NOT_TO_BOMB"
 
+
+STUCK_COUNTER = 0
 
 MOVEMENT_EVENTS = {
     e.MOVED_LEFT,
@@ -88,6 +92,8 @@ def add_custom_events(
     if old_game_state is None:
         return
 
+    # events.append(EXIST_PENALTY)
+
     old_state = state_to_key(old_game_state)
     # new_state = state_to_key(new_game_state)
 
@@ -97,19 +103,26 @@ def add_custom_events(
     # to escape to. Demark agent if it chooses to bomb nothing.
     if e.BOMB_DROPPED in events and safety_exists == 1 and not any(old_state[13:17]):
         events.append(CHOSE_TO_BOMB_CRATES)
+    # Bomb was dropped but there were no crates to bomb (Edit later to include players positions)
     elif e.BOMB_DROPPED in events and old_state[4] == 0:
         events.append(BOMBED_NOTHING)
+    # Agent was in a perfect spot, but chose not to bomb
+    elif e.BOMB_DROPPED not in events and old_state[17] == 1 and old_state[4] > 0 and old_state[19] == 0 and not any(old_state[13:17]):
+        events.append(CHOSE_NOT_TO_BOMB)
 
+    # Get safety direction to check if the agent is moving towards safety or not (or WAITING in danger)
+    safety_direction_onehot = old_state[13:17]
+
+    # Remake the onehot into just a single integer -1 through 3 to indicate direction to line up with ACTION_TO_INDEX
+    # safety measured by integer, -1 is no safety direction or not in danger, 0 is UP, 1 is RIGHT, etc.
+    safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
+
+    # If agent chose to move (left, right, up, down)
     if MOVEMENT_EVENTS.intersection(events):
         coin_features = old_state[:4]
         crate_direction = old_state[18]
 
-        safety_direction_onehot = old_state[13:17]
-
-        # Remake the onehot into just a single integer -1 through 3 to indicate direction to line up with ACTION_TO_INDEX
-        safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
-
-        # Check if agent is moving towards safety or into blasts
+        # Check if agent is moving towards safety or into blasts when there is a valid esc direction
         if safety_direction != -1:
             if ACTION_TO_INDEX[self_action] == safety_direction:
                 events.append(MOVED_TOWARD_SAFETY)
@@ -140,7 +153,12 @@ def add_custom_events(
             else:
                 events.append(MOVED_NOT_TOWARD_COIN)
 
+    # Punish agent for waiting in a bomb blast
+    elif self_action == "WAIT" and safety_direction != -1:
+        events.append(MOVED_NOT_TOWARD_SAFETY)
 
+
+# Reimplement this function for fighting enemies, but make enemy specific
 # def bomb_would_hit_target(game_state: dict) -> bool:
 #     """Return whether a bomb here can hit a crate or current opponent.
 #
@@ -439,10 +457,12 @@ def reward_from_events(
         e.SURVIVED_ROUND: 1,
 
         CHOSE_TO_BOMB_CRATES: 2,
-        e.CRATE_DESTROYED: 1,
+        # BOMBED_MANY_CRATES: 2,
+        e.CRATE_DESTROYED: 1.5,
         MOVED_TOWARD_CRATE: 0.5,
         MOVED_NOT_TOWARD_CRATE: -0.5,
         BOMBED_NOTHING: -2,
+        CHOSE_NOT_TO_BOMB: -1.0,
 
         e.COIN_COLLECTED: 5.0,
         MOVED_TOWARD_COIN: 0.1,

@@ -15,7 +15,7 @@ ACTION_TO_INDEX = {
 }
 
 MODEL_FILE = os.environ.get("DYNA_MODEL_FILE", "dyna-model.pt")
-MODEL_SCHEMA_VERSION = 7
+MODEL_SCHEMA_VERSION = 9
 MAX_COIN_DISTANCE_BUCKET = 4
 
 def setup(self):
@@ -151,8 +151,9 @@ def state_to_features(
 
     # Get the number of bombable crates if the agent dropped a bomb at it's current tile
     bombable_crates = check_bombable_crates(game_state['self'][3], game_state['field'])
-    if bombable_crates > 0:
-        bombable_crates = 1
+
+    # flatten nearby bombable crates for simplicity to not grow qtable
+    bombable_crates = min(bombable_crates, 3)
 
     # Get the direction out of a bomb's way
     safety_direction_onehot = [0, 0, 0, 0]
@@ -180,6 +181,11 @@ def state_to_features(
 
     bomb_ticking = 0 if game_state['self'][2] else 1
 
+    # Ignore bombable crates, crate direction and safe bombing exists when currently in a blast
+    if bomb_ticking == 1:
+        if safety_direction != -1:
+            bombable_crates, safety_exists, crate_direction = 0, 0, -1
+
     # The previous tile distinguishes immediate backtracking without tying the
     # policy to absolute coordinates. Distance is clipped to keep the table
     # compact while preserving the useful near/far signal.
@@ -195,6 +201,29 @@ def state_to_features(
         bomb_ticking
         # min(coin_distance, MAX_COIN_DISTANCE_BUCKET),
     ]
+
+
+    """
+    feature_vector key
+    
+    coin_direction_onehot: array of 4 integers (0/1) indicating the direction to the nearest coin, uses BFS. All 0s
+        indicates no reachable coins
+    bombable_crates: integer indicating the number of bombable crates if the agent were to bomb right now (0 to 3),
+        where 3 means 3 or more crates are bombable currently
+    valid_check: array of 4 integers (0/1) indicating whether nearby tiles can be moved into (get_valid_actions), e.g.
+        not a bomb, crate, wall, agent, or explosion
+    previous_tile_direction_onehot: array of 4 integers (0/1) indicating the direction it just came from
+    safety_direction_onehot: array of 4 integers (0/1) indicating the direction to a safe tile out of a blast, all 0s
+        indicates that no danger exists or the agent is trapped
+    safety_exists: An integer (0/1/2) indicating if the agent were to bomb here if a safe escape exists. 
+        0 = no crates in bomb range, 1 = crates in range, escape exists, 2 = crates in range, bomb cuts off escapes
+    crate_direction: An integer (-1/0/1/2/3) indicating the direction to the nearest tile that the agent can
+        bomb where the bomb will hit a crate. -1 = agent on tile where bombs will hit a crate and an escape exists OR 
+        no tile with a bombable crate is reachable, 0/1/2/3 = directions to crate
+    bomb_ticking: An integer (0/1) indicating if the agent's bomb is currently placed on the environment, where 0 means
+        bomb is available, and 1 means it is unavailable. When 1, we ignore bombable crates, crate direction and 
+        safe bombing exists when currently in a blast.
+    """
 
     return feature_vector
 
