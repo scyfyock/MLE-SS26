@@ -5,7 +5,6 @@ from collections import deque
 import os
 
 import events as e
-import settings as s
 
 from .callbacks import (
     ACTIONS,
@@ -41,7 +40,7 @@ MOVEMENT_EVENTS = {
 }
 
 # Hyperparameters
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.05
 PLANNING_LEARNING_RATE = float(
     os.environ.get("DYNA_PLANNING_ALPHA", "0.01")
 )
@@ -103,19 +102,26 @@ def add_custom_events(
     # to escape to. Demark agent if it chooses to bomb nothing.
     if e.BOMB_DROPPED in events and safety_exists == 1 and not any(old_state[13:17]):
         events.append(CHOSE_TO_BOMB_CRATES)
+        if old_state[4] > 2:
+            events.append(BOMBED_MANY_CRATES)
     # Bomb was dropped but there were no crates to bomb (Edit later to include players positions)
     elif e.BOMB_DROPPED in events and old_state[4] == 0:
         events.append(BOMBED_NOTHING)
-    # Agent was in a perfect spot, but chose not to bomb
-    elif e.BOMB_DROPPED not in events and old_state[17] == 1 and old_state[4] > 0 and old_state[19] == 0 and not any(old_state[13:17]):
+    # Agent was in a perfect spot, but chose not to bomb (could add and not any(old_state[13:17]) to not penalize if a coin dir exists)
+    elif (e.BOMB_DROPPED not in events
+          and old_state[17] == 1
+          and old_state[4] > 0
+          and old_state[19] == 0
+          and not any(old_state[13:17])
+          ):
         events.append(CHOSE_NOT_TO_BOMB)
 
     # Get safety direction to check if the agent is moving towards safety or not (or WAITING in danger)
-    safety_direction_onehot = old_state[13:17]
+    safety_directions = old_state[13:17]
 
     # Remake the onehot into just a single integer -1 through 3 to indicate direction to line up with ACTION_TO_INDEX
     # safety measured by integer, -1 is no safety direction or not in danger, 0 is UP, 1 is RIGHT, etc.
-    safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
+    # safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
 
     # If agent chose to move (left, right, up, down)
     if MOVEMENT_EVENTS.intersection(events):
@@ -123,8 +129,8 @@ def add_custom_events(
         crate_direction = old_state[18]
 
         # Check if agent is moving towards safety or into blasts when there is a valid esc direction
-        if safety_direction != -1:
-            if ACTION_TO_INDEX[self_action] == safety_direction:
+        if any(safety_directions) == 1:
+            if safety_directions[ACTION_TO_INDEX[self_action]] == 1:
                 events.append(MOVED_TOWARD_SAFETY)
             else:
                 events.append(MOVED_NOT_TOWARD_SAFETY)
@@ -154,45 +160,8 @@ def add_custom_events(
                 events.append(MOVED_NOT_TOWARD_COIN)
 
     # Punish agent for waiting in a bomb blast
-    elif self_action == "WAIT" and safety_direction != -1:
+    elif self_action == "WAIT" and any(safety_directions) == 1:
         events.append(MOVED_NOT_TOWARD_SAFETY)
-
-
-# Reimplement this function for fighting enemies, but make enemy specific
-# def bomb_would_hit_target(game_state: dict) -> bool:
-#     """Return whether a bomb here can hit a crate or current opponent.
-#
-#     The ray casting deliberately matches ``Bomb.get_blast_coords`` in
-#     items.py: stone walls stop a blast, while crates do not stop subsequent
-#     blast tiles in this version of the environment.
-#     """
-#
-#     field = game_state["field"]
-#     x, y = game_state["self"][3]
-#     opponent_positions = {
-#         other[3]
-#         for other in game_state["others"]
-#     }
-#
-#     directions = (
-#         (1, 0),
-#         (-1, 0),
-#         (0, 1),
-#         (0, -1),
-#     )
-#
-#     for dx, dy in directions:
-#         for distance in range(1, s.BOMB_POWER + 1):
-#             position = (x + dx * distance, y + dy * distance)
-#             tile_type = field[position]
-#
-#             if tile_type == -1:
-#                 break
-#
-#             if tile_type == 1 or position in opponent_positions:
-#                 return True
-#
-#     return False
 
 def update_q(
     self,
@@ -453,23 +422,26 @@ def reward_from_events(
     rewards = {
         e.WAITED: -0.5,
         e.INVALID_ACTION: -2.0,
-        e.KILLED_SELF: -15,
-        e.SURVIVED_ROUND: 1,
+        e.KILLED_SELF: -10.0,
+        e.SURVIVED_ROUND: 1.0,
 
-        CHOSE_TO_BOMB_CRATES: 2,
-        # BOMBED_MANY_CRATES: 2,
-        e.CRATE_DESTROYED: 1.5,
+        CHOSE_TO_BOMB_CRATES: 2.0,
+        BOMBED_MANY_CRATES: 1.0,
+        e.CRATE_DESTROYED: 1.0,
         MOVED_TOWARD_CRATE: 0.5,
         MOVED_NOT_TOWARD_CRATE: -0.5,
-        BOMBED_NOTHING: -2,
+        BOMBED_NOTHING: -4.0,
         CHOSE_NOT_TO_BOMB: -1.0,
 
         e.COIN_COLLECTED: 5.0,
-        MOVED_TOWARD_COIN: 0.1,
+        MOVED_TOWARD_COIN: 0.5,
         MOVED_NOT_TOWARD_COIN: -0.5,
 
-        MOVED_NOT_TOWARD_SAFETY: -2,
-        MOVED_TOWARD_SAFETY: 0.1,
+        MOVED_NOT_TOWARD_SAFETY: -2.0,
+        MOVED_TOWARD_SAFETY: 0.5,
+
+        e.KILLED_OPPONENT: 10.0,
+        e.GOT_KILLED: -5.0,
     }
 
 
