@@ -58,7 +58,8 @@ except ImportError:
 FILE_PATH = Path(__file__).resolve()
 AGENT_CODE_DIR = FILE_PATH.parents[1]
 ROOT_DIR = AGENT_CODE_DIR.parent
-DEFAULT_AGENT_DIR = AGENT_CODE_DIR / "qwm_agent"
+DEFAULT_AGENT_DIR = FILE_PATH.parent
+
 
 
 # -----------------------------------------------------------------------------
@@ -95,6 +96,20 @@ class MatchTask:
     checkpoint_path: str
     root_dir: str = str(ROOT_DIR)
     timeout_sec: int = 120
+    agent_name: str = "qwm_agent_clean"
+
+
+def resolve_opponents(opponents: List[str]) -> List[str]:
+    """Gracefully replace non-existent opponent agents with standard rule_based_agent for remote autonomy."""
+    resolved = []
+    for opp in opponents:
+        opp_dir = AGENT_CODE_DIR / opp
+        if not (opp_dir.is_dir() and (opp_dir / "callbacks.py").is_file()):
+            resolved.append("rule_based_agent")
+        else:
+            resolved.append(opp)
+    return resolved
+
 
 
 @dataclass
@@ -289,6 +304,8 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
     env["MY_QWM_BEAM_SIZE"] = str(cand.beam_size)
     env["MY_QWM_TREE_DISCOUNT"] = str(cand.tree_discount)
     env["MY_QWM_ALPHA_VQ"] = str(cand.alpha_vq)
+    env["MY_QWM_USE_SMALL_MODEL"] = "1"
+    env["MY_QWM_SMALL_MODEL_FILE"] = "small_model.pt"
 
     # Restrict single-thread CPU execution per worker to prevent CPU thrashing
     env["OMP_NUM_THREADS"] = "1"
@@ -296,11 +313,14 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
     env["OPENBLAS_NUM_THREADS"] = "1"
     env["TORCH_NUM_THREADS"] = "1"
 
+    target_agent = getattr(task, "agent_name", None) or DEFAULT_AGENT_DIR.name
+    resolved_opps = resolve_opponents(scen.opponents)
+
     cmd = [
         sys.executable,
         str(Path(task.root_dir) / "main.py"),
         "play",
-        "--agents", "qwm_agent", *scen.opponents,
+        "--agents", target_agent, *resolved_opps,
         "--scenario", scen.scenario,
         "--seed", str(task.seed),
         "--n-rounds", "1",
@@ -348,12 +368,12 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
         by_agent = round_data.get("by_agent", {})
 
         agent_data = None
-        target_name = "qwm_agent"
+        target_name = target_agent
         if target_name in by_agent:
             agent_data = by_agent[target_name]
         else:
             for k, v in by_agent.items():
-                if "qwm_agent" in k:
+                if target_name in k or "qwm_agent" in k:
                     agent_data = v
                     target_name = k
                     break
@@ -364,7 +384,7 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
                 scenario_key=scen.key,
                 seed=task.seed,
                 success=False,
-                error_msg="qwm_agent not found in round stats"
+                error_msg=f"{target_name} not found in round stats"
             )
 
         steps = int(agent_data.get("steps", 0))
@@ -571,6 +591,7 @@ def evaluate_candidates_matched(
                     scenario=scen,
                     seed=seed,
                     checkpoint_path=checkpoint_path,
+                    agent_name=DEFAULT_AGENT_DIR.name
                 ))
 
     total_tasks = len(tasks)
@@ -703,6 +724,22 @@ def tune_with_optuna(
         default_db.parent.mkdir(parents=True, exist_ok=True)
         storage_url = f"sqlite:///{default_db}"
 
+    if not study_name:
+        study_name = f"{DEFAULT_AGENT_DIR.name}_inference_tuning"
+
+    try:
+        summaries = optuna.study.get_all_study_summaries(storage=storage_url)
+        if summaries:
+            existing_names = [s.study_name for s in summaries]
+            if study_name not in existing_names:
+                matched = [name for name in existing_names if "qwm" in name]
+                if matched:
+                    study_name = matched[0]
+                else:
+                    study_name = existing_names[0]
+    except Exception:
+        pass
+
     if reset_study:
         try:
             optuna.delete_study(study_name=study_name, storage=storage_url)
@@ -774,6 +811,7 @@ def tune_with_optuna(
                         scenario=scen,
                         seed=s_id,
                         checkpoint_path=checkpoint_path,
+                        agent_name=DEFAULT_AGENT_DIR.name
                     ))
 
             futures = [executor.submit(run_matched_game_worker, t) for t in trial_tasks]
@@ -911,6 +949,8 @@ def _create_candidate_agent_wrapper(
         "beam_size": cand.beam_size,
         "tree_discount": cand.tree_discount,
         "alpha_vq": cand.alpha_vq,
+        "use_small_model": True,
+        "small_model_file": "small_model.pt",
         "candidate_name": cand.name,
     }
     with open(target_dir / "config.json", "w") as f:
@@ -922,13 +962,13 @@ import os
 from pathlib import Path
 import sys
 
-# Ensure qwm_agent is importable
-SRC_DIR = Path(__file__).resolve().parent.parent / "qwm_agent"
+# Ensure agent is importable
+SRC_DIR = Path(__file__).resolve().parent.parent / "{DEFAULT_AGENT_DIR.name}"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 import importlib
-qwm_cb = importlib.import_module("agent_code.qwm_agent.callbacks")
+qwm_cb = importlib.import_module(f"agent_code.{DEFAULT_AGENT_DIR.name}.callbacks")
 
 def setup(self):
     cfg_file = Path(__file__).parent / 'config.json'
@@ -1060,10 +1100,11 @@ def run_head_to_head_tournament(
             wdir = _create_candidate_agent_wrapper(w_name, cand, checkpoint_path)
             created_dirs.append(wdir)
 
-        # Fill remaining slots with my_spatial_dqn_agent and rule_based_agent if < 4 candidates
+        # Fill remaining slots with rival or rule_based_agent if < 4 candidates
         active_roster = list(wrapper_names)
-        if len(active_roster) < 4 and include_dqn_rival:
-            active_roster.append("my_spatial_dqn_agent")
+        rival = "my_spatial_dqn_agent"
+        if len(active_roster) < 4 and include_dqn_rival and (AGENT_CODE_DIR / rival / "callbacks.py").is_file():
+            active_roster.append(rival)
         while len(active_roster) < 4:
             active_roster.append("rule_based_agent")
 
@@ -1421,7 +1462,7 @@ def resolve_checkpoint(requested: Optional[str] = None) -> Path:
         if best_pts:
             return best_pts[0].resolve()
 
-    raise FileNotFoundError("Could not find any model checkpoint (.pt) in qwm_agent directory or runs.")
+    raise FileNotFoundError(f"Could not find any model checkpoint (.pt) in {DEFAULT_AGENT_DIR.name} directory or runs.")
 
 
 # -----------------------------------------------------------------------------
@@ -1522,11 +1563,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--storage", type=str, default=str(DEFAULT_AGENT_DIR / "optuna_study.db"),
-        help="Path or URL to Optuna persistent storage SQLite file (default: 'agent_code/qwm_agent/optuna_study.db')."
+        help=f"Path or URL to Optuna persistent storage SQLite file (default: '{DEFAULT_AGENT_DIR / 'optuna_study.db'}')."
     )
     parser.add_argument(
-        "--study-name", type=str, default="qwm_agent_inference_tuning",
-        help="Optuna study name (default: 'qwm_agent_inference_tuning')."
+        "--study-name", type=str, default=None,
+        help="Optuna study name (default: auto-detected or 'qwm_agent_inference_tuning')."
     )
     parser.add_argument(
         "--reset-study", action="store_true", default=False,
@@ -1581,7 +1622,7 @@ def main(argv: Optional[List[str]] = None):
     args = parser.parse_args(argv)
 
     checkpoint_path = resolve_checkpoint(args.checkpoint)
-    print(f"[tune_inference:qwm_agent] Using checkpoint: {checkpoint_path}")
+    print(f"[tune_inference:{DEFAULT_AGENT_DIR.name}] Using checkpoint: {checkpoint_path}")
 
     # Filter scenarios
     requested_scen_keys = [s.strip() for s in args.scenarios.split(",") if s.strip()]
@@ -1678,13 +1719,13 @@ def main(argv: Optional[List[str]] = None):
     out_dir = ROOT_DIR / args.output_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    report_md_path = out_dir / f"tune_qwm_agent_report_{timestamp}.md"
-    results_json_path = out_dir / f"tune_qwm_agent_results_{timestamp}.json"
+    report_md_path = out_dir / f"tune_{DEFAULT_AGENT_DIR.name}_report_{timestamp}.md"
+    results_json_path = out_dir / f"tune_{DEFAULT_AGENT_DIR.name}_results_{timestamp}.json"
 
     export_markdown_tuning_report(eval_res, h2h_res, report_md_path)
 
     full_export_data = {
-        "agent": "qwm_agent",
+        "agent": DEFAULT_AGENT_DIR.name,
         "eval_res": eval_res,
         "h2h_res": h2h_res,
         "winning_candidate": winning_cand_dict,

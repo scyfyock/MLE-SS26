@@ -165,12 +165,30 @@ def publish_overlay_trace(trace: Optional[PlannerOverlayTrace]):
     """Publishes latest PlannerOverlayTrace for GUI render."""
     global _LATEST_TRACE
     _LATEST_TRACE = trace
+    try:
+        import sys
+        for mod_name in ['agent_code.qwm_agent_clean.plan_overlay', 'agent_code.my_spatial_qwm_agent.plan_overlay', 'agent_code.qwm_agent.plan_overlay']:
+            if mod_name in sys.modules:
+                mod = sys.modules[mod_name]
+                if mod is not sys.modules.get(__name__):
+                    mod._LATEST_TRACE = trace
+    except Exception:
+        pass
 
 
 def clear_overlay_trace():
     """Clears published overlay trace on round reset or disable."""
     global _LATEST_TRACE
     _LATEST_TRACE = None
+    try:
+        import sys
+        for mod_name in ['agent_code.qwm_agent_clean.plan_overlay', 'agent_code.my_spatial_qwm_agent.plan_overlay', 'agent_code.qwm_agent.plan_overlay']:
+            if mod_name in sys.modules:
+                mod = sys.modules[mod_name]
+                if mod is not sys.modules.get(__name__):
+                    mod._LATEST_TRACE = None
+    except Exception:
+        pass
 
 
 def get_latest_overlay_trace() -> Optional[PlannerOverlayTrace]:

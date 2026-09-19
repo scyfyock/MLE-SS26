@@ -1,0 +1,10 @@
+2026-09-19 14:09:12,780 [dyna_agent_code] INFO: Loading existing Dyna model.
+2026-09-19 14:09:12,781 [dyna_agent_wrapper] ERROR: No module named 'numpy._core.numeric'
+Traceback (most recent call last):
+  File "/home/tobitoyota/Documents/UniMLE/MLE-SS26/Final Project/agents.py", line 248, in process_event
+    event_result = getattr(module, event_name)(self.fake_self, *event_args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tobitoyota/Documents/UniMLE/MLE-SS26/Final Project/agent_code/dyna_agent/callbacks.py", line 37, in setup
+    saved_data = pickle.load(file)
+                 ^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'numpy._core.numeric'

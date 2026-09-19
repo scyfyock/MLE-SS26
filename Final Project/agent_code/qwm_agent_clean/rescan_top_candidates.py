@@ -2,18 +2,18 @@
 """
 rescan_top_candidates.py - Deep Rescan & Multi-Scenario Direct Tournament for Pure QWM Agent.
 
-Explicitly dedicated to `qwm_agent` (pure neural world model tree search).
+Explicitly dedicated to `qwm_agent_clean` (pure neural world model tree search).
 
 Key Features:
   1. Loads the top-k candidates discovered during Optuna Bayesian search from SQLite storage
-     (defaults to agent_code/qwm_agent/optuna_study.db, study 'qwm_agent_inference_tuning').
+     (defaults to agent_code/qwm_agent_clean/optuna_study.db, study 'qwm_agent_inference_tuning').
   2. Rescans top candidates across diverse scenarios with significantly more matched seeds (episodes).
   3. Separates Point Wins (highest positive score) and Survival Wins (sole survivor).
   4. Provides explicit per-scenario / per-phase performance breakdowns for each game scenario.
   5. Pits the top candidates (if k <= 4) directly against each other in multi-scenario 4-player
      deathmatches with rotated corner positions.
   6. Exports rich ANSI console tables, GitHub-flavored Markdown reports, and full JSON artifacts.
-  7. Supports --save-best to write optimal parameters directly into agent_code/qwm_agent/config.json.
+  7. Supports --save-best to write optimal parameters directly into agent_code/qwm_agent_clean/config.json.
 """
 
 import argparse
@@ -187,6 +187,7 @@ class MatchTask:
     checkpoint_path: str
     root_dir: str
     timeout_sec: int = 180
+    agent_name: str = "qwm_agent_clean"
 
 
 @dataclass
@@ -208,6 +209,18 @@ class MatchResult:
     think_time_ms: float = 0.0
     success: bool = True
     error_msg: str = ""
+
+
+def resolve_opponents(opponents: List[str]) -> List[str]:
+    """Gracefully replace non-existent opponent agents with standard rule_based_agent for remote autonomy."""
+    resolved = []
+    for opp in opponents:
+        opp_dir = AGENT_CODE_DIR / opp
+        if not (opp_dir.is_dir() and (opp_dir / "callbacks.py").is_file()):
+            resolved.append("rule_based_agent")
+        else:
+            resolved.append(opp)
+    return resolved
 
 
 # Default benchmark scenarios covering diverse game phases
@@ -248,6 +261,7 @@ DEFAULT_SCENARIOS = [
         weight=0.8
     ),
 ]
+
 
 
 # -----------------------------------------------------------------------------
@@ -387,11 +401,14 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
     env["MY_QWM_TREE_DISCOUNT"] = str(cand.tree_discount)
     env["MY_QWM_ALPHA_VQ"] = str(cand.alpha_vq)
 
+    target_agent = getattr(task, "agent_name", None) or AGENT_DIR.name
+    resolved_opps = resolve_opponents(scen.opponents)
+
     cmd = [
         sys.executable,
         str(Path(task.root_dir) / "main.py"),
         "play",
-        "--agents", "qwm_agent", *scen.opponents,
+        "--agents", target_agent, *resolved_opps,
         "--scenario", scen.scenario,
         "--seed", str(task.seed),
         "--n-rounds", "1",
@@ -438,14 +455,14 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
         round_data = by_round[first_round_id]
         by_agent = round_data.get("by_agent", {})
 
-        # Locate qwm_agent in round data
-        target_name = "qwm_agent"
+        # Locate target agent in round data
+        target_name = target_agent
         agent_data = None
         if target_name in by_agent:
             agent_data = by_agent[target_name]
         else:
             for k, v in by_agent.items():
-                if "qwm_agent" in k:
+                if target_name in k or "qwm_agent" in k:
                     agent_data = v
                     target_name = k
                     break
@@ -456,7 +473,7 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
                 scenario_key=scen.key,
                 seed=task.seed,
                 success=False,
-                error_msg="qwm_agent not found in round stats"
+                error_msg=f"{target_name} not found in round stats"
             )
 
         # Extract per-agent core statistics
@@ -561,11 +578,11 @@ from pathlib import Path
 import sys
 import importlib
 
-SRC_DIR = Path(__file__).resolve().parent.parent / "qwm_agent"
+SRC_DIR = Path(__file__).resolve().parent.parent / "{AGENT_DIR.name}"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-orig_cb = importlib.import_module("agent_code.qwm_agent.callbacks")
+orig_cb = importlib.import_module(f"agent_code.{AGENT_DIR.name}.callbacks")
 
 def setup(self):
     cfg_file = Path(__file__).parent / 'config.json'
@@ -700,8 +717,10 @@ def run_multi_scenario_h2h_tournament(
             created_dirs.append(wdir)
 
         active_roster = list(wrapper_names)
-        if len(active_roster) < 4:
-            active_roster.append("my_spatial_dqn_agent")
+        rival = "my_spatial_dqn_agent"
+        if (AGENT_CODE_DIR / rival / "callbacks.py").is_file():
+            if len(active_roster) < 4:
+                active_roster.append(rival)
         while len(active_roster) < 4:
             active_roster.append("rule_based_agent")
 
@@ -1168,7 +1187,8 @@ def export_markdown_report(
     phase1_summary: Dict[str, Any],
     h2h_summary: Optional[Dict[str, Any]],
     output_path: Path,
-    checkpoint_path: str
+    checkpoint_path: str,
+    agent_name: str = "qwm_agent_clean"
 ):
     """Generates an executive GitHub-Flavored Markdown report."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1182,9 +1202,9 @@ def export_markdown_report(
         rec_source = "Phase 1 Cross-Scenario Matched Benchmark"
 
     md = []
-    md.append("# Top-K Candidate Rescan & Tournament Report (`qwm_agent`)\n")
+    md.append(f"# Top-K Candidate Rescan & Tournament Report (`{agent_name}`)\n")
     md.append(f"- **Evaluated Checkpoint:** `{checkpoint_path}`")
-    md.append(f"- **Agent Architecture:** `qwm_agent` (Pure Neural World Model)")
+    md.append(f"- **Agent Architecture:** `{agent_name}` (Pure Neural World Model)")
     md.append(f"- **Timestamp:** `{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}`")
     md.append(f"- **Candidates Benchmarked:** {len(candidates)}")
     md.append(f"- **Total Phase 1 Matches:** {sum(phase1_summary['summary_by_cand'][c.name]['n_matches'] for c in candidates)}\n")
@@ -1275,11 +1295,11 @@ def export_markdown_report(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Deep Rescan & Multi-Scenario Direct Tournament for Pure QWM Agent (agent_code/qwm_agent)."
+        description=f"Deep Rescan & Multi-Scenario Direct Tournament for Pure QWM Agent (agent_code/{AGENT_DIR.name})."
     )
     parser.add_argument(
-        "--agent", type=str, default="qwm_agent",
-        help="Target agent (explicitly qwm_agent)."
+        "--agent", type=str, default=AGENT_DIR.name,
+        help=f"Target agent (default: {AGENT_DIR.name})."
     )
     parser.add_argument(
         "--top-k", type=int, default=4,
@@ -1290,8 +1310,8 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"Path or SQLite URL to Optuna persistent storage (default: {AGENT_DIR / 'optuna_study.db'})."
     )
     parser.add_argument(
-        "--study-name", type=str, default="qwm_agent_inference_tuning",
-        help="Optuna study name (default: qwm_agent_inference_tuning)."
+        "--study-name", type=str, default=None,
+        help="Optuna study name (default: auto-detected or 'qwm_agent_inference_tuning')."
     )
     parser.add_argument(
         "--checkpoint", type=str, default=None,
@@ -1323,7 +1343,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--save-best", action="store_true", default=False,
-        help="Automatically write the winning hyperparameters into agent_code/qwm_agent/config.json."
+        help=f"Automatically write the winning hyperparameters into agent_code/{AGENT_DIR.name}/config.json."
     )
     parser.add_argument(
         "--output-dir", type=str, default=None,
@@ -1338,7 +1358,7 @@ def main(argv: Optional[List[str]] = None):
     c = Colors(enabled=True)
 
     checkpoint_path = resolve_checkpoint(args.checkpoint)
-    print(c.bold("\n[rescan_top_candidates] Target Agent: qwm_agent (Pure Neural QWM)"))
+    print(c.bold(f"\n[rescan_top_candidates] Target Agent: {args.agent} (Pure Neural QWM)"))
     print(f"[rescan_top_candidates] Checkpoint:   {checkpoint_path}")
 
     # 1. Obtain Candidates (From JSON or Optuna Study)
@@ -1362,7 +1382,7 @@ def main(argv: Optional[List[str]] = None):
         storage_target = args.storage or str(AGENT_DIR / "optuna_study.db")
         candidates = extract_top_k_from_optuna(
             storage=storage_target,
-            study_name=args.study_name,
+            study_name=args.study_name or f"{args.agent}_inference_tuning",
             top_k=args.top_k
         )
 
@@ -1402,14 +1422,15 @@ def main(argv: Optional[List[str]] = None):
                     scenario=scen,
                     seed=seed,
                     checkpoint_path=str(checkpoint_path),
-                    root_dir=str(ROOT_DIR)
+                    root_dir=str(ROOT_DIR),
+                    agent_name=args.agent
                 ))
 
     total_matches = len(tasks)
     print(c.bold("\n" + "="*85))
     print(c.bold(f"★ PHASE 1: PARALLEL MATCHED-GAME EVALUATION ({total_matches} TOTAL MATCHES) ★"))
     print(c.bold("="*85))
-    print(f"Agent:         qwm_agent (Pure Neural)")
+    print(f"Agent:         {args.agent} (Pure Neural)")
     print(f"Candidates:    {len(candidates)}")
     print(f"Scenarios:     {len(scenarios)} ({', '.join(s.key for s in scenarios)})")
     print(f"Matched Seeds: {len(seeds)} seeds per scenario ({seeds[0]}..{seeds[-1]})")
@@ -1520,8 +1541,8 @@ def main(argv: Optional[List[str]] = None):
     out_dir = Path(args.output_dir) if args.output_dir else (AGENT_DIR / "eval_results")
     out_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    md_file = out_dir / f"top_k_rescan_qwm_agent_{ts}.md"
-    json_file = out_dir / f"top_k_rescan_qwm_agent_{ts}.json"
+    md_file = out_dir / f"top_k_rescan_{args.agent}_{ts}.md"
+    json_file = out_dir / f"top_k_rescan_{args.agent}_{ts}.json"
 
     export_markdown_report(
         candidates=candidates,
@@ -1529,11 +1550,12 @@ def main(argv: Optional[List[str]] = None):
         phase1_summary=phase1_summary,
         h2h_summary=h2h_summary,
         output_path=md_file,
-        checkpoint_path=str(checkpoint_path)
+        checkpoint_path=str(checkpoint_path),
+        agent_name=args.agent
     )
 
     json_data = {
-        "agent": "qwm_agent",
+        "agent": args.agent,
         "checkpoint": str(checkpoint_path),
         "timestamp": ts,
         "candidates": [c.to_dict() for c in candidates],
