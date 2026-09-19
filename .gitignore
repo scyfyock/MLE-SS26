@@ -8,3 +8,50 @@ Exercises/Ex03/MNIST/raw/train-images-idx3-ubyte
 Exercises/Ex03/MNIST/raw/train-images-idx3-ubyte.gz
 Exercises/Ex03/MNIST/raw/train-labels-idx1-ubyte
 Exercises/Ex03/MNIST/raw/train-labels-idx1-ubyte.gz
+agent_code/basic_agent/logs/basic_agent.log
+agent_code/dyna_agent/logs/dyna_agent.log
+agent_code/dyna_agent_rev/logs/dyna_agent_rev.log
+agent_code/rule_based_agent/logs/rule_based_agent_0.log
+agent_code/rule_based_agent/logs/rule_based_agent_1.log
+agent_code/rule_based_agent/logs/rule_based_agent_2.log
+Final Project/agent_code/dyna_agent_old/callbacks.py
+Final Project/agent_code/dyna_agent_old/dyna-model-p0.pt
+Final Project/agent_code/dyna_agent_old/dyna-model-v1-p10-before-state-fix.pt
+Final Project/agent_code/dyna_agent_old/dyna-model.pt
+Final Project/agent_code/dyna_agent_old/train.py
+Final Project/agent_code/dyna_agent_backup_conflict/train.py
+Final Project/agent_code/dyna_agent_backup_conflict/logs/dyna_agent.log
+Final Project/agent_code/dyna_agent_backup_conflict/dyna-model.pt
+Final Project/agent_code/dyna_agent_backup_conflict/dyna-model-v1-p10-before-state-fix.pt
+Final Project/agent_code/dyna_agent_backup_conflict/dyna-model-p0.pt
+Final Project/agent_code/dyna_agent_backup_conflict/callbacks.py
+Final Project/agent_code/dyna_agent_backup_conflict/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/dyna_agent_backup_conflict/__pycache__/callbacks.cpython-313.pyc
+Final Project/agent_code/dyna_agent_backup_conflict/__pycache__/callbacks.cpython-312.pyc
+Final Project/agent_code/dyna_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/dyna_agent/__pycache__/callbacks.cpython-313.pyc
+Final Project/agent_code/dyna_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/__pycache__/main.cpython-313.pyc
+Final Project/__pycache__/main.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-313.pyc
+Final Project/__pycache__/environment.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-313.pyc
+Final Project/__pycache__/environment.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-313.pyc
+Final Project/__pycache__/environment.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-313.pyc
+Final Project/__pycache__/environment.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-312.pyc
+Final Project/__pycache__/environment.cpython-313.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/train.cpython-312.pyc
+Final Project/agent_code/basic_agent/__pycache__/callbacks.cpython-312.pyc
+*.pyc

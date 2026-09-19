@@ -26,11 +26,7 @@ CHOSE_TO_BOMB_CRATES = "CHOSE_TO_BOMB_CRATES"
 MOVED_TOWARD_SAFETY = "MOVED_TOWARD_SAFETY"
 MOVED_NOT_TOWARD_SAFETY = "MOVED_NOT_TOWARD_SAFETY"
 BOMBED_NOTHING = "BOMBED_NOTHING"
-BOMBED_MANY_CRATES = "BOMBED_MANY_CRATES"
-CHOSE_NOT_TO_BOMB = "CHOSE_NOT_TO_BOMB"
 
-
-STUCK_COUNTER = 0
 
 MOVEMENT_EVENTS = {
     e.MOVED_LEFT,
@@ -40,7 +36,7 @@ MOVEMENT_EVENTS = {
 }
 
 # Hyperparameters
-LEARNING_RATE = 0.05
+LEARNING_RATE = 0.1
 PLANNING_LEARNING_RATE = float(
     os.environ.get("DYNA_PLANNING_ALPHA", "0.01")
 )
@@ -86,82 +82,64 @@ def add_custom_events(
     self_action: str,
     events: List[str],
 ):
-    """Add events describing whether a movement followed the coin & crate direction."""
-
+    """Add events describing whether a movement followed the coin direction."""
     if old_game_state is None:
         return
-
-    # events.append(EXIST_PENALTY)
 
     old_state = state_to_key(old_game_state)
     # new_state = state_to_key(new_game_state)
 
     safety_exists = old_state[17]
-
-    # Score bombs based on whether they are dropped near crates and dropped when the agent has a place
-    # to escape to. Demark agent if it chooses to bomb nothing.
     if e.BOMB_DROPPED in events and safety_exists == 1 and not any(old_state[13:17]):
         events.append(CHOSE_TO_BOMB_CRATES)
-        if old_state[4] > 2:
-            events.append(BOMBED_MANY_CRATES)
-    # Bomb was dropped but there were no crates to bomb (Edit later to include players positions)
     elif e.BOMB_DROPPED in events and old_state[4] == 0:
         events.append(BOMBED_NOTHING)
-    # Agent was in a perfect spot, but chose not to bomb (could add and not any(old_state[13:17]) to not penalize if a coin dir exists)
-    elif (e.BOMB_DROPPED not in events
-          and old_state[17] == 1
-          and old_state[4] > 0
-          and old_state[19] == 0
-          and not any(old_state[13:17])
-          ):
-        events.append(CHOSE_NOT_TO_BOMB)
 
-    # Get safety direction to check if the agent is moving towards safety or not (or WAITING in danger)
-    safety_directions = old_state[13:17]
+    if not MOVEMENT_EVENTS.intersection(events):
+        return
 
-    # Remake the onehot into just a single integer -1 through 3 to indicate direction to line up with ACTION_TO_INDEX
-    # safety measured by integer, -1 is no safety direction or not in danger, 0 is UP, 1 is RIGHT, etc.
-    # safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
+    if self_action not in ACTION_TO_INDEX:
+        return
 
-    # If agent chose to move (left, right, up, down)
-    if MOVEMENT_EVENTS.intersection(events):
-        coin_features = old_state[:4]
-        crate_direction = old_state[18]
+    coin_features = old_state[:4]
+    crate_direction = old_state[18]
 
-        # Check if agent is moving towards safety or into blasts when there is a valid esc direction
-        if any(safety_directions) == 1:
-            if safety_directions[ACTION_TO_INDEX[self_action]] == 1:
-                events.append(MOVED_TOWARD_SAFETY)
-            else:
-                events.append(MOVED_NOT_TOWARD_SAFETY)
+    safety_direction_onehot = old_state[13:17]
+    safety_direction = safety_direction_onehot.index(1) if any(safety_direction_onehot) else -1
 
-        coin_direction = next(
-            (
-                index
-                for index, value in enumerate(coin_features)
-                if value == 1
-            ),
-            None,
-        )
+    if safety_direction != -1:
+        if ACTION_TO_INDEX[self_action] == safety_direction:
+            events.append(MOVED_TOWARD_SAFETY)
+        else:
+            events.append(MOVED_NOT_TOWARD_SAFETY)
 
-        # To prevent the agent from being aimless, gives the agent the direction to a tile that when bombed
-        # hits a crate, and also leaves a space for it to escape from
-        if crate_direction != -1:
-            if ACTION_TO_INDEX[self_action] == crate_direction:
-                events.append(MOVED_TOWARD_CRATE)
-            else:
-                events.append(MOVED_NOT_TOWARD_CRATE)
+    coin_direction = next(
+        (
+            index
+            for index, value in enumerate(coin_features)
+            if value == 1
+        ),
+        None,
+    )
 
-        # Guide agent towards the nearest coin
+    if crate_direction != -1:
+        if ACTION_TO_INDEX[self_action] == crate_direction:
+            events.append(MOVED_TOWARD_CRATE)
+        else:
+            events.append(MOVED_NOT_TOWARD_CRATE)
+
+    if coin_direction is None:
+        return
+
+    if ACTION_TO_INDEX[self_action] == coin_direction:
         if coin_direction is not None:
-            if ACTION_TO_INDEX[self_action] == coin_direction:
-                events.append(MOVED_TOWARD_COIN)
-            else:
-                events.append(MOVED_NOT_TOWARD_COIN)
+            events.append(MOVED_TOWARD_COIN)
+    else:
+        if coin_direction is not None:
+            events.append(MOVED_NOT_TOWARD_COIN)
 
-    # Punish agent for waiting in a bomb blast
-    elif self_action == "WAIT" and any(safety_directions) == 1:
-        events.append(MOVED_NOT_TOWARD_SAFETY)
+
+
 
 def update_q(
     self,
@@ -422,26 +400,21 @@ def reward_from_events(
     rewards = {
         e.WAITED: -0.5,
         e.INVALID_ACTION: -2.0,
-        e.KILLED_SELF: -10.0,
-        e.SURVIVED_ROUND: 1.0,
+        e.KILLED_SELF: -15,
+        e.SURVIVED_ROUND: 1,
 
-        CHOSE_TO_BOMB_CRATES: 2.0,
-        BOMBED_MANY_CRATES: 1.0,
-        e.CRATE_DESTROYED: 1.0,
+        CHOSE_TO_BOMB_CRATES: 2,
+        e.CRATE_DESTROYED: 1,
         MOVED_TOWARD_CRATE: 0.5,
         MOVED_NOT_TOWARD_CRATE: -0.5,
-        BOMBED_NOTHING: -4.0,
-        CHOSE_NOT_TO_BOMB: -1.0,
+        BOMBED_NOTHING: -2,
 
         e.COIN_COLLECTED: 5.0,
-        MOVED_TOWARD_COIN: 0.5,
+        MOVED_TOWARD_COIN: 0.1,
         MOVED_NOT_TOWARD_COIN: -0.5,
 
-        MOVED_NOT_TOWARD_SAFETY: -2.0,
+        MOVED_NOT_TOWARD_SAFETY: -2,
         MOVED_TOWARD_SAFETY: 0.5,
-
-        e.KILLED_OPPONENT: 10.0,
-        e.GOT_KILLED: -5.0,
     }
 
 
