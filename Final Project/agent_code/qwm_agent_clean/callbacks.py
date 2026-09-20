@@ -132,6 +132,10 @@ def setup(self):
         if self.use_small_model:
             self.logger.warning("Small model file not found at %s.", sm_path)
 
+    self.small_model_weight = float(
+        os.environ.get('MY_QWM_SMALL_MODEL_WEIGHT', self.cfg.get('small_model_weight', 0.25))
+    )
+
 
 def act(self, game_state: dict) -> str:
     """
@@ -207,7 +211,7 @@ def act(self, game_state: dict) -> str:
             base_scores=scores,
         )
         predicted_deltas = self.small_model.predict_deltas(path_feats)
-        scores = scores + predicted_deltas
+        scores = scores + self.small_model_weight * predicted_deltas
 
     # 3. Action Selection: Argmax over physically valid actions
     valid_indices = np.flatnonzero(valid_mask)

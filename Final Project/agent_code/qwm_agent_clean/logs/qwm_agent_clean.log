@@ -1,2 +1,2 @@
-2026-09-19 14:07:53,950 [qwm_agent_clean_code] INFO: Loaded trained Spatial QWM model from my-saved-model-spatial-qwm.pt
-2026-09-19 14:07:53,952 [qwm_agent_clean_code] INFO: Loaded Small Path Reward Model (dynActivation) from small_model.pt
+2026-09-20 18:23:39,275 [qwm_agent_clean_code] INFO: Loaded trained Spatial QWM model from my-saved-model-spatial-qwm.pt
+2026-09-20 18:23:39,278 [qwm_agent_clean_code] INFO: Loaded Small Path Reward Model (dynActivation) from small_model.pt

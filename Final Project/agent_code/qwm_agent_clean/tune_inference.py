@@ -73,6 +73,7 @@ class InferenceCandidate:
     beam_size: int
     tree_discount: float
     alpha_vq: float
+    small_model_weight: float = 0.25
     description: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
@@ -306,6 +307,7 @@ def run_matched_game_worker(task: MatchTask) -> MatchResult:
     env["MY_QWM_ALPHA_VQ"] = str(cand.alpha_vq)
     env["MY_QWM_USE_SMALL_MODEL"] = "1"
     env["MY_QWM_SMALL_MODEL_FILE"] = "small_model.pt"
+    env["MY_QWM_SMALL_MODEL_WEIGHT"] = str(getattr(cand, "small_model_weight", 0.25))
 
     # Restrict single-thread CPU execution per worker to prevent CPU thrashing
     env["OMP_NUM_THREADS"] = "1"
@@ -762,7 +764,8 @@ def tune_with_optuna(
         print("  • Search Depth:           [3, 12]  (Lookahead Horizon)")
         print("  • Beam Size:              [6, 48]  (step 3)")
         print("  • Tree Discount (λ):      [0.00, 0.40] (step 0.01)")
-        print("  • Alpha VQ (α):           [0.00, 0.96] (step 0.02)\n")
+        print("  • Alpha VQ (α):           [0.00, 0.96] (step 0.02)")
+        print("  • Small Model Weight:     [0.00, 1.00] (step 0.05)\n")
         sys.stdout.flush()
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -791,6 +794,7 @@ def tune_with_optuna(
             beam_size = trial.suggest_int("beam_size", 6, 48, step=3)
             tree_discount = trial.suggest_float("tree_discount", 0.00, 0.40, step=0.01)
             alpha_vq = trial.suggest_float("alpha_vq", 0.00, 0.96, step=0.02)
+            small_model_weight = trial.suggest_float("small_model_weight", 0.00, 1.00, step=0.05)
 
             cand_name = f"Optuna-{trial.number:03d}"
             cand = InferenceCandidate(
@@ -799,7 +803,8 @@ def tune_with_optuna(
                 beam_size=beam_size,
                 tree_discount=tree_discount,
                 alpha_vq=alpha_vq,
-                description=f"D={search_depth}, B={beam_size}, λ={tree_discount:.2f}, α={alpha_vq:.2f}"
+                small_model_weight=small_model_weight,
+                description=f"D={search_depth}, B={beam_size}, λ={tree_discount:.2f}, α={alpha_vq:.2f}, W_sm={small_model_weight:.2f}"
             )
 
             # Build tasks for this trial
@@ -845,7 +850,7 @@ def tune_with_optuna(
                 win_pct = summary["overall_win_rate"]
                 mean_sc = summary["overall_mean_score"]
                 with lock:
-                    print(f"  Trial #{trial.number:2d} | {cand_name} (D={search_depth}, B={beam_size}, λ={tree_discount:.2f}, α={alpha_vq:.2f}) "
+                    print(f"  Trial #{trial.number:2d} | {cand_name} (D={search_depth}, B={beam_size}, λ={tree_discount:.2f}, α={alpha_vq:.2f}, W_sm={small_model_weight:.2f}) "
                           f"-> Score {score:6.1f} | Win {win_pct:4.1f}% | AvgPts {mean_sc:4.1f} | {elapsed:.0f}s elapsed")
                     sys.stdout.flush()
 
@@ -866,7 +871,8 @@ def tune_with_optuna(
                     beam_size=params.get("beam_size", 12),
                     tree_discount=params.get("tree_discount", 0.12),
                     alpha_vq=params.get("alpha_vq", 0.45),
-                    description=f"D={params.get('search_depth', 4)}, B={params.get('beam_size', 12)}, λ={params.get('tree_discount', 0.12):.2f}, α={params.get('alpha_vq', 0.45):.2f}"
+                    small_model_weight=params.get("small_model_weight", 0.25),
+                    description=f"D={params.get('search_depth', 4)}, B={params.get('beam_size', 12)}, λ={params.get('tree_discount', 0.12):.2f}, α={params.get('alpha_vq', 0.45):.2f}, W_sm={params.get('small_model_weight', 0.25):.2f}"
                 )
                 u_attrs = past_trial.user_attrs
                 all_trial_results[cand_name] = {
@@ -951,6 +957,7 @@ def _create_candidate_agent_wrapper(
         "alpha_vq": cand.alpha_vq,
         "use_small_model": True,
         "small_model_file": "small_model.pt",
+        "small_model_weight": cand.small_model_weight,
         "candidate_name": cand.name,
     }
     with open(target_dir / "config.json", "w") as f:
@@ -980,7 +987,7 @@ def setup(self):
     self.cfg = cfg
     qwm_cb.setup(self)
     # Direct candidate hyperparameter injection
-    for k in ['search_depth', 'beam_size', 'tree_discount', 'alpha_vq']:
+    for k in ['search_depth', 'beam_size', 'tree_discount', 'alpha_vq', 'small_model_weight']:
         if k in cfg:
             setattr(self, k, cfg[k])
 
@@ -1187,7 +1194,7 @@ def run_head_to_head_tournament(
         # Also track my_spatial_dqn_agent if participating
         if "my_spatial_dqn_agent" in active_roster:
             h2h_stats["my_spatial_dqn_agent"] = {
-                "candidate": {"name": "my_spatial_dqn_agent", "search_depth": 0, "beam_size": 0, "tree_discount": 0.0, "alpha_vq": 0.0},
+                "candidate": {"name": "my_spatial_dqn_agent", "search_depth": 0, "beam_size": 0, "tree_discount": 0.0, "alpha_vq": 0.0, "small_model_weight": 0.0},
                 "wrapper": "my_spatial_dqn_agent",
                 "wins": 0,
                 "survived_count": 0,
@@ -1273,7 +1280,7 @@ def print_tuning_summary(
         print(f"Persistent DB: {eval_res['storage']} (Study: '{eval_res.get('study_name', 'default')}')\n")
 
     headers = [
-        "Rank", "Candidate", "Depth", "Beam", "Disc(λ)", "Alpha(α)",
+        "Rank", "Candidate", "Depth", "Beam", "Disc(λ)", "Alpha(α)", "W_sm",
         "Comp Score", "Win %", "Surv %", "Score", "Coins", "Kills", "Think ms"
     ]
     rows = []
@@ -1287,6 +1294,7 @@ def print_tuning_summary(
             str(cand["beam_size"]),
             f"{cand['tree_discount']:.2f}",
             f"{cand['alpha_vq']:.2f}",
+            f"{cand.get('small_model_weight', 0.25):.2f}",
             f"{r['overall_score']:.1f}",
             f"{r['overall_win_rate']:.1f}%",
             f"{r['overall_survival_rate']:.1f}%",
@@ -1299,7 +1307,7 @@ def print_tuning_summary(
     print(render_table(
         headers=headers,
         rows=rows,
-        aligns=['center', 'left', 'right', 'right', 'right', 'right',
+        aligns=['center', 'left', 'right', 'right', 'right', 'right', 'right',
                 'right', 'right', 'right', 'right', 'right', 'right', 'right']
     ))
 
@@ -1327,17 +1335,16 @@ def print_tuning_summary(
 
     # Table 3: Head-to-Head Direct Combat Tournament (if available)
     if h2h_res and h2h_res.get("ranked_h2h"):
-        print(c.bold("\n" + "="*85))
-        print(c.bold(f"★ HEAD-TO-HEAD DIRECT COMBAT TOURNAMENT ({h2h_res['valid_rounds']} ROUNDS) ★"))
-        print(c.bold("="*85))
-        h_headers = ["Place", "Candidate", "Direct Wins", "Direct Win %", "Surv %", "Score / Rnd", "Kills", "Coins"]
+        print(c.bold(f"\n★ DIRECT COMBAT HEAD-TO-HEAD TOURNAMENT ({h2h_res['valid_rounds']} ROUNDS) ★"))
+        h_headers = ["Place", "Combatant", "Direct Wins", "Win %", "Surv %", "Score/Rnd", "Kills/Rnd", "Coins/Rnd"]
         h_rows = []
-        for p_idx, p in enumerate(h2h_res["ranked_h2h"], 1):
-            p_name = c.bold(c.green(p["candidate"]["name"])) if p_idx == 1 else p["candidate"]["name"]
-            medal = "🥇 " if p_idx == 1 else ("🥈 " if p_idx == 2 else ("🥉 " if p_idx == 3 else "   "))
+        for idx, p in enumerate(h2h_res["ranked_h2h"], 1):
+            cand = p["candidate"]
+            medal = "🥇 " if idx == 1 else ("🥈 " if idx == 2 else ("🥉 " if idx == 3 else ""))
+            name_str = c.bold(f"{medal}{cand['name']}") if idx == 1 else f"{medal}{cand['name']}"
             h_rows.append([
-                f"{medal}#{p_idx}",
-                p_name,
+                f"#{idx}",
+                name_str,
                 str(p["wins"]),
                 f"{p['win_rate']:.1f}%",
                 f"{p['survival_rate']:.1f}%",
@@ -1357,11 +1364,12 @@ def print_tuning_summary(
     print(c.bold("\n" + "="*85))
     print(c.bold(f"★ RECOMMENDED INFERENCE HYPERPARAMETERS (QWM_AGENT) ★"))
     print(c.bold("="*85))
-    print(f"  • Candidate:      {c.green(c.bold(champion['name']))}")
-    print(f"  • Search Depth:   {champion['search_depth']} (Lookahead Horizon)")
-    print(f"  • Beam Size:      {champion['beam_size']}")
-    print(f"  • Tree Discount:  {champion['tree_discount']:.3f}")
-    print(f"  • Alpha VQ:       {champion['alpha_vq']:.3f}\n")
+    print(f"  • Candidate:          {c.green(c.bold(champion['name']))}")
+    print(f"  • Search Depth:       {champion['search_depth']} (Lookahead Horizon)")
+    print(f"  • Beam Size:          {champion['beam_size']}")
+    print(f"  • Tree Discount:      {champion['tree_discount']:.3f}")
+    print(f"  • Alpha VQ:           {champion['alpha_vq']:.3f}")
+    print(f"  • Small Model Weight: {champion.get('small_model_weight', 0.25):.3f}\n")
 
     if save_best_path:
         print(c.green(f"✔ Successfully saved best configuration to: {save_best_path}\n"))
@@ -1399,16 +1407,17 @@ def export_markdown_tuning_report(
     md.append(f"| `search_depth` | **{champion['search_depth']}** | Lookahead horizon / tree depth |")
     md.append(f"| `beam_size` | **{champion['beam_size']}** | Beam search width |")
     md.append(f"| `tree_discount` | **{champion['tree_discount']:.3f}** | Lookahead discount factor $\\lambda$ |")
-    md.append(f"| `alpha_vq` | **{champion['alpha_vq']:.3f}** | Blending weight $\\alpha$ ($V_Q$ vs $V_r$) |\n")
+    md.append(f"| `alpha_vq` | **{champion['alpha_vq']:.3f}** | Blending weight $\\alpha$ ($V_Q$ vs $V_r$) |")
+    md.append(f"| `small_model_weight` | **{champion.get('small_model_weight', 0.25):.3f}** | Weight scaling for small path reward model |\n")
 
     md.append("## 2. Cross-Scenario Composite Leaderboard\n")
-    md.append("| Rank | Candidate | Depth | Beam | Disc ($\\lambda$) | Alpha ($\\alpha$) | Comp Score | Win % | Surv % | Score | Coins | Kills | Think (ms) |")
-    md.append("|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+    md.append("| Rank | Candidate | Depth | Beam | Disc ($\\lambda$) | Alpha ($\\alpha$) | W_sm | Comp Score | Win % | Surv % | Score | Coins | Kills | Think (ms) |")
+    md.append("|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
     for idx, r in enumerate(ranked[:20], 1):
         c_cand = r["candidate"]
         md.append(
             f"| #{idx} | **{c_cand['name']}** | {c_cand['search_depth']} | {c_cand['beam_size']} | "
-            f"{c_cand['tree_discount']:.2f} | {c_cand['alpha_vq']:.2f} | **{r['overall_score']:.1f}** | "
+            f"{c_cand['tree_discount']:.2f} | {c_cand['alpha_vq']:.2f} | {c_cand.get('small_model_weight', 0.25):.2f} | **{r['overall_score']:.1f}** | "
             f"{r['overall_win_rate']:.1f}% | {r['overall_survival_rate']:.1f}% | {r['overall_mean_score']:.2f} | "
             f"{r['overall_coins']:.2f} | {r['overall_kills']:.2f} | {r['overall_think_time_ms']:.1f} |"
         )
@@ -1705,7 +1714,7 @@ def main(argv: Optional[List[str]] = None):
                 cur_cfg = json.load(f)
         else:
             cur_cfg = {}
-        for k in ["search_depth", "beam_size", "tree_discount", "alpha_vq"]:
+        for k in ["search_depth", "beam_size", "tree_discount", "alpha_vq", "small_model_weight"]:
             if k in winning_cand_dict:
                 cur_cfg[k] = winning_cand_dict[k]
         with open(cfg_path, "w") as f:

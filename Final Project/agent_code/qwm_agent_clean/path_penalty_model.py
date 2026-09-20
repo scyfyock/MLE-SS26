@@ -408,37 +408,18 @@ def compute_heuristic_penalty_targets(
 
     targets = np.zeros(N_ACTIONS, dtype=np.float32)
 
-    # 1. Idle wait penalty (Optuna / safety heuristic)
-    if has_targets and not in_danger and not hazard_nearby and has_safe_move:
-        targets[ACTION_TO_IDX['WAIT']] -= 15.0
-    elif has_targets and not in_danger and consecutive_stationary_steps >= 2 and has_safe_move:
-        targets[ACTION_TO_IDX['WAIT']] -= 10.0
+    # 1. Idle wait penalty: penalize standing still when safe and productive targets exist
+    if has_targets and not in_danger and has_safe_move:
+        targets[ACTION_TO_IDX['WAIT']] -= 3.0
+        if consecutive_stationary_steps >= 1:
+            targets[ACTION_TO_IDX['WAIT']] -= 2.0
 
-    # 2. Suicide bomb penalty
+    # 2. Suicide bomb penalty: heavily penalize dropping a bomb that traps self with no escape
     if bomb_traps_self:
-        targets[ACTION_TO_IDX['BOMB']] -= 20.0
+        targets[ACTION_TO_IDX['BOMB']] -= 5.0
 
-    # 3. Movement anti-oscillation penalties
-    if has_targets and not in_danger and coordinate_history:
-        for i, (a_name, (dx, dy)) in enumerate(DIRS):
-            nx, ny = x + dx, y + dy
-            cand_traj = list(coordinate_history) + [(x, y), (nx, ny)]
-
-            # A. Repeating cycle penalty
-            is_cycle, _, reps = detect_cycle_helper(cand_traj, max_k=12)
-            if is_cycle:
-                targets[i] -= (8.0 + 4.0 * (reps - 2)) * stagnation_factor
-
-            # B. Direct reversal penalty
-            if prev_tile is not None and (nx, ny) == prev_tile:
-                targets[i] -= 5.0 * stagnation_factor
-
-            # C. Heatmap revisit count penalty
-            visits = sum(1 for p in coordinate_history if p == (nx, ny))
-            if visits >= 1:
-                targets[i] -= (visits * 2.5 + max(0, visits - 2) * 3.0) * stagnation_factor
-
-    # 4. Optuna rollout trace penalties (predicted_wait_penalty & predicted_loop_penalty)
+    # 3. Optuna rollout trace penalties (plan wait steps and internal plan loops)
+    # Safe moves remain at clean 0.0 baseline (never penalize ordinary corridor navigation)
     if plan_details is not None:
         for idx, cand in enumerate(plan_details):
             tiles, blocked, _ = walk_path(
@@ -446,8 +427,10 @@ def compute_heuristic_penalty_targets(
             wait_count = sum(a == 'WAIT' for a in cand['actions'])
             repeated_steps = max(0, len(tiles) - len(set(tiles)))
             targets[idx] -= (wait_count * wait_penalty + repeated_steps * loop_penalty)
+    else:
+        targets[ACTION_TO_IDX['WAIT']] -= wait_penalty
 
-    targets = np.clip(targets, -40.0, 0.0)
+    targets = np.clip(targets, -10.0, 0.0)
     return targets
 
 
