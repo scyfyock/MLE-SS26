@@ -1,10 +1,10 @@
 {
   "model_file": "my-saved-model-spatial-qwm.pt",
   "tree_search": true,
-  "search_depth": 7,
-  "beam_size": 36,
-  "tree_discount": 0.19,
-  "alpha_vq": 0.5,
+  "search_depth": 5,
+  "beam_size": 18,
+  "tree_discount": 0.08,
+  "alpha_vq": 0.19,
   "use_small_model": true,
   "small_model_file": "small_model.pt"
 }
