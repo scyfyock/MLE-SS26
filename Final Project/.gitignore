@@ -7,4 +7,3 @@ work/
 agent_code/*/logs/
 
 # Trained agents and intermediate checkpoints remain local.
-agent_code/**/*.pt
