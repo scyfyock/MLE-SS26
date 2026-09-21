@@ -1,0 +1,2 @@
+2026-09-21 19:21:50,651 [qwm_agent_code] INFO: Loaded trained Spatial QWM model from my-saved-model-spatial-qwm.pt
+2026-09-21 19:21:50,653 [qwm_agent_code] INFO: Loaded Small Path Reward Model from small_model.pt

@@ -1,0 +1,2 @@
+2026-09-21 17:40:09,079 [qwm_agent_veryclean_code] INFO: Loaded trained Spatial QWM model from my-saved-model-spatial-qwm.pt
+2026-09-21 17:40:09,081 [qwm_agent_veryclean_code] INFO: Loaded Small Path Reward Model (dynActivation) from small_model.pt
