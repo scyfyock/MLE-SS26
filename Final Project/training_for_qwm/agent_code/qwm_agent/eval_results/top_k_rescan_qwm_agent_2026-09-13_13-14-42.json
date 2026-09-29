@@ -1,0 +1,123 @@
+{
+  "agent": "qwm_agent",
+  "checkpoint": "/home/tobitoyota/Desktop/bomberman_rl/agent_code/qwm_agent/my-saved-model-spatial-qwm.pt",
+  "timestamp": "2026-09-13_13-14-42",
+  "candidates": [
+    {
+      "name": "Top1-D7-B36",
+      "search_depth": 7,
+      "beam_size": 36,
+      "tree_discount": 0.19,
+      "alpha_vq": 0.84,
+      "source_trial": 160,
+      "optuna_score": 4592.504166666667,
+      "description": "Depth=7, Beam=36, \u03bb=0.19, \u03b1=0.84"
+    }
+  ],
+  "phase1": {
+    "summary_by_cand": {
+      "Top1-D7-B36": {
+        "candidate": {
+          "name": "Top1-D7-B36",
+          "search_depth": 7,
+          "beam_size": 36,
+          "tree_discount": 0.19,
+          "alpha_vq": 0.84,
+          "source_trial": 160,
+          "optuna_score": 4592.504166666667,
+          "description": "Depth=7, Beam=36, \u03bb=0.19, \u03b1=0.84"
+        },
+        "n_matches": 2,
+        "overall_score": 8225.0,
+        "overall_point_wins": 2,
+        "overall_point_win_rate": 100.0,
+        "overall_survival_wins": 1,
+        "overall_survival_win_rate": 50.0,
+        "overall_total_wins": 2,
+        "overall_total_win_rate": 100.0,
+        "overall_survival_rate": 100.0,
+        "overall_mean_score": 9.5,
+        "overall_coins": 4.5,
+        "overall_kills": 1.0,
+        "overall_crates": 30.0,
+        "overall_think_time_ms": 43.714023814314885,
+        "scenarios": {
+          "classic_combat": {
+            "scenario_key": "classic_combat",
+            "scenario_name": "Classic vs 3x Rule-Based",
+            "n_matches": 2,
+            "point_wins": 2,
+            "point_win_rate": 100.0,
+            "survival_wins": 1,
+            "survival_win_rate": 50.0,
+            "total_wins": 2,
+            "total_win_rate": 100.0,
+            "survivals": 2,
+            "survival_rate": 100.0,
+            "mean_score": 9.5,
+            "mean_coins": 4.5,
+            "mean_kills": 1.0,
+            "mean_crates": 30.0,
+            "mean_suicides": 0.0,
+            "mean_got_killed": 0.0,
+            "mean_think_ms": 43.714023814314885,
+            "scenario_score": 12337.5
+          }
+        }
+      }
+    },
+    "ranked_overall": [
+      {
+        "candidate": {
+          "name": "Top1-D7-B36",
+          "search_depth": 7,
+          "beam_size": 36,
+          "tree_discount": 0.19,
+          "alpha_vq": 0.84,
+          "source_trial": 160,
+          "optuna_score": 4592.504166666667,
+          "description": "Depth=7, Beam=36, \u03bb=0.19, \u03b1=0.84"
+        },
+        "n_matches": 2,
+        "overall_score": 8225.0,
+        "overall_point_wins": 2,
+        "overall_point_win_rate": 100.0,
+        "overall_survival_wins": 1,
+        "overall_survival_win_rate": 50.0,
+        "overall_total_wins": 2,
+        "overall_total_win_rate": 100.0,
+        "overall_survival_rate": 100.0,
+        "overall_mean_score": 9.5,
+        "overall_coins": 4.5,
+        "overall_kills": 1.0,
+        "overall_crates": 30.0,
+        "overall_think_time_ms": 43.714023814314885,
+        "scenarios": {
+          "classic_combat": {
+            "scenario_key": "classic_combat",
+            "scenario_name": "Classic vs 3x Rule-Based",
+            "n_matches": 2,
+            "point_wins": 2,
+            "point_win_rate": 100.0,
+            "survival_wins": 1,
+            "survival_win_rate": 50.0,
+            "total_wins": 2,
+            "total_win_rate": 100.0,
+            "survivals": 2,
+            "survival_rate": 100.0,
+            "mean_score": 9.5,
+            "mean_coins": 4.5,
+            "mean_kills": 1.0,
+            "mean_crates": 30.0,
+            "mean_suicides": 0.0,
+            "mean_got_killed": 0.0,
+            "mean_think_ms": 43.714023814314885,
+            "scenario_score": 12337.5
+          }
+        }
+      }
+    ],
+    "total_results": 2
+  },
+  "phase2_h2h": null
+}

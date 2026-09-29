@@ -96,7 +96,23 @@ class NeuralQFunction:
     def _encode(states):
         return np.stack([encode_state(state) for state in states])
 
+<<<<<<< HEAD
+    def attach_accelerator(self, device=None):
+        """Compile online Q-network to PyTorch XPU/GPU/CPU module."""
+        try:
+            from .xpu_accelerator import XPUQNetworkAccelerator
+            self.accelerator = XPUQNetworkAccelerator(self, device=device)
+            return self.accelerator
+        except Exception:
+            self.accelerator = None
+            return None
+
     def predict(self, state, target=False):
+        if not target and getattr(self, "accelerator", None) is not None:
+            return self.accelerator.predict(encode_state(state))
+=======
+    def predict(self, state, target=False):
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
         model = self.target_model if target else self.online_model
         return np.asarray(
             model.predict(encode_state(state).reshape(1, -1))[0],

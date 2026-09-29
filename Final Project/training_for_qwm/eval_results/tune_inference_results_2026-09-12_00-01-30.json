@@ -1,0 +1,723 @@
+{
+  "eval_res": {
+    "ranked_candidates": [
+      {
+        "candidate": {
+          "name": "Deep-D4-B12",
+          "search_depth": 4,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.4,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Deep 4-step lookahead with value blending"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 39.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6036.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 0.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 22.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 4031.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          }
+        },
+        "overall_score": 5033.5,
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 3.0,
+        "overall_coins": 3.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 2,
+          "mean_delta_score": -2.0
+        }
+      },
+      {
+        "candidate": {
+          "name": "ValueHeavy-D3",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.6,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "3-step lookahead prioritizing critic Q-value"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 6.0,
+            "mean_coins": 1.0,
+            "mean_kills": 1.0,
+            "mean_crates": 15.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 62.0,
+            "per_seed": {
+              "1000": 6.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 8.0,
+            "mean_coins": 3.0,
+            "mean_kills": 1.0,
+            "mean_crates": 36.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6091.0,
+            "per_seed": {
+              "1000": 8.0
+            }
+          }
+        },
+        "overall_score": 3076.5,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 7.0,
+        "overall_coins": 2.0,
+        "overall_kills": 1.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 2,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 2.0
+        }
+      },
+      {
+        "candidate": {
+          "name": "Standard-D3-B12",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Balanced 3-step lookahead"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 2.0,
+            "mean_coins": 2.0,
+            "mean_kills": 0.0,
+            "mean_crates": 12.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 24.0,
+            "per_seed": {
+              "1000": 2.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 22.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6036.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          }
+        },
+        "overall_score": 3030.0,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 2.5,
+        "overall_coins": 2.5,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 2,
+          "mean_delta_score": -2.5
+        }
+      },
+      {
+        "candidate": {
+          "name": "Fast-D2-B6",
+          "search_depth": 2,
+          "beam_size": 6,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Fast shallow lookahead (ultra-low latency)"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 5.0,
+            "mean_coins": 5.0,
+            "mean_kills": 0.0,
+            "mean_crates": 27.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 60.0,
+            "per_seed": {
+              "1000": 5.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 0.0,
+            "mean_score": 5.0,
+            "mean_coins": 5.0,
+            "mean_kills": 0.0,
+            "mean_crates": 21.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 4055.0,
+            "per_seed": {
+              "1000": 5.0
+            }
+          }
+        },
+        "overall_score": 2057.5,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 5.0,
+        "overall_coins": 5.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 2,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      }
+    ],
+    "summary_by_cand": {
+      "Fast-D2-B6": {
+        "candidate": {
+          "name": "Fast-D2-B6",
+          "search_depth": 2,
+          "beam_size": 6,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Fast shallow lookahead (ultra-low latency)"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 5.0,
+            "mean_coins": 5.0,
+            "mean_kills": 0.0,
+            "mean_crates": 27.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 60.0,
+            "per_seed": {
+              "1000": 5.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 0.0,
+            "mean_score": 5.0,
+            "mean_coins": 5.0,
+            "mean_kills": 0.0,
+            "mean_crates": 21.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 4055.0,
+            "per_seed": {
+              "1000": 5.0
+            }
+          }
+        },
+        "overall_score": 2057.5,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 5.0,
+        "overall_coins": 5.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 2,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      },
+      "Standard-D3-B12": {
+        "candidate": {
+          "name": "Standard-D3-B12",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Balanced 3-step lookahead"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 2.0,
+            "mean_coins": 2.0,
+            "mean_kills": 0.0,
+            "mean_crates": 12.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 24.0,
+            "per_seed": {
+              "1000": 2.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 22.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6036.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          }
+        },
+        "overall_score": 3030.0,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 2.5,
+        "overall_coins": 2.5,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 2,
+          "mean_delta_score": -2.5
+        }
+      },
+      "Deep-D4-B12": {
+        "candidate": {
+          "name": "Deep-D4-B12",
+          "search_depth": 4,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.4,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Deep 4-step lookahead with value blending"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 39.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6036.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 0.0,
+            "mean_score": 3.0,
+            "mean_coins": 3.0,
+            "mean_kills": 0.0,
+            "mean_crates": 22.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 4031.0,
+            "per_seed": {
+              "1000": 3.0
+            }
+          }
+        },
+        "overall_score": 5033.5,
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 3.0,
+        "overall_coins": 3.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 2,
+          "mean_delta_score": -2.0
+        }
+      },
+      "ValueHeavy-D3": {
+        "candidate": {
+          "name": "ValueHeavy-D3",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.6,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "3-step lookahead prioritizing critic Q-value"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 1,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 6.0,
+            "mean_coins": 1.0,
+            "mean_kills": 1.0,
+            "mean_crates": 15.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 62.0,
+            "per_seed": {
+              "1000": 6.0
+            }
+          },
+          "dqn_rivalry": {
+            "n_matches": 1,
+            "win_rate": 100.0,
+            "survival_rate": 100.0,
+            "mean_score": 8.0,
+            "mean_coins": 3.0,
+            "mean_kills": 1.0,
+            "mean_crates": 36.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 6091.0,
+            "per_seed": {
+              "1000": 8.0
+            }
+          }
+        },
+        "overall_score": 3076.5,
+        "overall_win_rate": 50.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 7.0,
+        "overall_coins": 2.0,
+        "overall_kills": 1.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 2,
+        "paired_vs_baseline": {
+          "baseline": "Fast-D2-B6",
+          "matched_rounds": 2,
+          "paired_wins": 2,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 2.0
+        }
+      }
+    },
+    "scenarios": [
+      {
+        "key": "classic_combat",
+        "display_name": "Classic vs 3x Rule-Based",
+        "scenario": "classic",
+        "opponents": [
+          "rule_based_agent",
+          "rule_based_agent",
+          "rule_based_agent"
+        ],
+        "weight": 1.5
+      },
+      {
+        "key": "dqn_rivalry",
+        "display_name": "DQN Rivalry (1x Spatial DQN + 2x Rule-Based)",
+        "scenario": "classic",
+        "opponents": [
+          "my_spatial_dqn_agent",
+          "rule_based_agent",
+          "rule_based_agent"
+        ],
+        "weight": 1.5
+      }
+    ],
+    "seeds": [
+      1000
+    ],
+    "checkpoint_path": "/home/tobitoyota/Desktop/bomberman_rl/agent_code/my_spatial_qwm_agent/my-saved-model-spatial-qwm.pt",
+    "total_matches": 8,
+    "elapsed_seconds": 33.1876482963562
+  },
+  "h2h_res": {
+    "ranked_h2h": [
+      {
+        "candidate": {
+          "name": "Standard-D3-B12",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Balanced 3-step lookahead"
+        },
+        "wrapper": "_tune_cand_2",
+        "wins": 1,
+        "survived_count": 2,
+        "total_score": 11.0,
+        "total_kills": 1.0,
+        "total_coins": 6.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 50.0,
+        "survival_rate": 100.0,
+        "mean_score": 5.5,
+        "mean_kills": 0.5,
+        "mean_coins": 3.0
+      },
+      {
+        "candidate": {
+          "name": "Fast-D2-B6",
+          "search_depth": 2,
+          "beam_size": 6,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Fast shallow lookahead (ultra-low latency)"
+        },
+        "wrapper": "_tune_cand_3",
+        "wins": 1,
+        "survived_count": 1,
+        "total_score": 9.0,
+        "total_kills": 1.0,
+        "total_coins": 4.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 50.0,
+        "survival_rate": 50.0,
+        "mean_score": 4.5,
+        "mean_kills": 0.5,
+        "mean_coins": 2.0
+      },
+      {
+        "candidate": {
+          "name": "Deep-D4-B12",
+          "search_depth": 4,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.4,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Deep 4-step lookahead with value blending"
+        },
+        "wrapper": "_tune_cand_0",
+        "wins": 0,
+        "survived_count": 1,
+        "total_score": 11.0,
+        "total_kills": 1.0,
+        "total_coins": 6.0,
+        "total_suicides": 1.0,
+        "rounds_played": 2,
+        "win_rate": 0.0,
+        "survival_rate": 50.0,
+        "mean_score": 5.5,
+        "mean_kills": 0.5,
+        "mean_coins": 3.0
+      },
+      {
+        "candidate": {
+          "name": "ValueHeavy-D3",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.6,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "3-step lookahead prioritizing critic Q-value"
+        },
+        "wrapper": "_tune_cand_1",
+        "wins": 0,
+        "survived_count": 1,
+        "total_score": 2.0,
+        "total_kills": 0.0,
+        "total_coins": 2.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 0.0,
+        "survival_rate": 50.0,
+        "mean_score": 1.0,
+        "mean_kills": 0.0,
+        "mean_coins": 1.0
+      }
+    ],
+    "h2h_stats": {
+      "Deep-D4-B12": {
+        "candidate": {
+          "name": "Deep-D4-B12",
+          "search_depth": 4,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.4,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Deep 4-step lookahead with value blending"
+        },
+        "wrapper": "_tune_cand_0",
+        "wins": 0,
+        "survived_count": 1,
+        "total_score": 11.0,
+        "total_kills": 1.0,
+        "total_coins": 6.0,
+        "total_suicides": 1.0,
+        "rounds_played": 2,
+        "win_rate": 0.0,
+        "survival_rate": 50.0,
+        "mean_score": 5.5,
+        "mean_kills": 0.5,
+        "mean_coins": 3.0
+      },
+      "ValueHeavy-D3": {
+        "candidate": {
+          "name": "ValueHeavy-D3",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.6,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "3-step lookahead prioritizing critic Q-value"
+        },
+        "wrapper": "_tune_cand_1",
+        "wins": 0,
+        "survived_count": 1,
+        "total_score": 2.0,
+        "total_kills": 0.0,
+        "total_coins": 2.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 0.0,
+        "survival_rate": 50.0,
+        "mean_score": 1.0,
+        "mean_kills": 0.0,
+        "mean_coins": 1.0
+      },
+      "Standard-D3-B12": {
+        "candidate": {
+          "name": "Standard-D3-B12",
+          "search_depth": 3,
+          "beam_size": 12,
+          "tree_discount": 0.12,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Balanced 3-step lookahead"
+        },
+        "wrapper": "_tune_cand_2",
+        "wins": 1,
+        "survived_count": 2,
+        "total_score": 11.0,
+        "total_kills": 1.0,
+        "total_coins": 6.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 50.0,
+        "survival_rate": 100.0,
+        "mean_score": 5.5,
+        "mean_kills": 0.5,
+        "mean_coins": 3.0
+      },
+      "Fast-D2-B6": {
+        "candidate": {
+          "name": "Fast-D2-B6",
+          "search_depth": 2,
+          "beam_size": 6,
+          "tree_discount": 0.15,
+          "alpha_vq": 0.45,
+          "predicted_wait_penalty": 1.0,
+          "predicted_loop_penalty": 2.0,
+          "description": "Fast shallow lookahead (ultra-low latency)"
+        },
+        "wrapper": "_tune_cand_3",
+        "wins": 1,
+        "survived_count": 1,
+        "total_score": 9.0,
+        "total_kills": 1.0,
+        "total_coins": 4.0,
+        "total_suicides": 0.0,
+        "rounds_played": 2,
+        "win_rate": 50.0,
+        "survival_rate": 50.0,
+        "mean_score": 4.5,
+        "mean_kills": 0.5,
+        "mean_coins": 2.0
+      }
+    },
+    "valid_rounds": 2,
+    "total_rounds": 2,
+    "scenario": "classic",
+    "elapsed_seconds": 42.87136149406433
+  },
+  "winning_candidate": {
+    "name": "Standard-D3-B12",
+    "search_depth": 3,
+    "beam_size": 12,
+    "tree_discount": 0.12,
+    "alpha_vq": 0.45,
+    "predicted_wait_penalty": 1.0,
+    "predicted_loop_penalty": 2.0,
+    "description": "Balanced 3-step lookahead"
+  },
+  "timestamp": "2026-09-12_00-01-30"
+}

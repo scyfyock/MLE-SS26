@@ -1,0 +1,56 @@
+{
+  "agent": "qwm_agent",
+  "checkpoint": "/home/tobitoyota/Desktop/bomberman_rl/agent_code/qwm_agent/my-saved-model-spatial-qwm.pt",
+  "timestamp": "2026-09-13_12-58-54",
+  "candidates": [
+    {
+      "name": "Top1-D3-B42",
+      "search_depth": 3,
+      "beam_size": 42,
+      "tree_discount": 0.08,
+      "alpha_vq": 0.1,
+      "source_trial": 0,
+      "optuna_score": null,
+      "description": "Depth=3, Beam=42, \u03bb=0.08, \u03b1=0.10"
+    },
+    {
+      "name": "Top2-D4-B21",
+      "search_depth": 4,
+      "beam_size": 21,
+      "tree_discount": 0.17,
+      "alpha_vq": 0.44,
+      "source_trial": 1,
+      "optuna_score": null,
+      "description": "Depth=4, Beam=21, \u03bb=0.17, \u03b1=0.44"
+    }
+  ],
+  "phase1": {
+    "summary_by_cand": {
+      "Top1-D3-B42": {
+        "candidate": {
+          "name": "Top1-D3-B42",
+          "search_depth": 3,
+          "beam_size": 42,
+          "tree_discount": 0.08,
+          "alpha_vq": 0.1,
+          "source_trial": 0,
+          "optuna_score": null,
+          "description": "Depth=3, Beam=42, \u03bb=0.08, \u03b1=0.10"
+        },
+        "n_matches": 2,
+        "overall_score": 5706.0,
+        "overall_point_wins": 1,
+        "overall_point_win_rate": 50.0,
+        "overall_survival_wins": 0,
+        "overall_survival_win_rate": 0.0,
+        "overall_total_wins": 1,
+        "overall_total_win_rate": 50.0,
+        "overall_survival_rate": 50.0,
+        "overall_mean_score": 10.5,
+        "overall_coins": 8.0,
+        "overall_kills": 0.5,
+        "overall_crates": 24.5,
+        "overall_think_time_ms": 16.691388553481993,
+        "scenarios": {
+          "classic_combat": {
+            "scenario": 

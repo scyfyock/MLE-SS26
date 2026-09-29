@@ -1,0 +1,42 @@
+{
+    "by_agent": {
+        "world_model_agent": {
+            "coins": 1,
+            "moves": 400,
+            "rounds": 1,
+            "score": 1,
+            "score_wins": 1,
+            "steps": 400,
+            "survival_wins": 1,
+            "survived": 1,
+            "time": 0.9579308032989502,
+            "wins": 1
+        }
+    },
+    "by_round": {
+        "test_stats | Round 01 (2026-09-24 20-28-14)": {
+            "by_agent": {
+                "world_model_agent": {
+                    "bombs": 0,
+                    "coins": 1,
+                    "crates": 0,
+                    "dead": false,
+                    "got_killed": 0,
+                    "invalid": 0,
+                    "kills": 0,
+                    "moves": 400,
+                    "score": 1,
+                    "steps": 400,
+                    "suicides": 0,
+                    "survived": 1,
+                    "waited": 0,
+                    "won": 1
+                }
+            },
+            "coins": 1,
+            "kills": 0,
+            "steps": 400,
+            "suicides": 0
+        }
+    }
+}

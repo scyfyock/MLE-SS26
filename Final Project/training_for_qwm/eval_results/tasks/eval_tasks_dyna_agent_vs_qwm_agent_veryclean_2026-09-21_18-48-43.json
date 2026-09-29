@@ -1,0 +1,379 @@
+{
+  "timestamp": "2026-09-21_18-48-43",
+  "duration_seconds": 18.06265878677368,
+  "agents": [
+    "dyna_agent",
+    "qwm_agent_veryclean"
+  ],
+  "tasks": [
+    {
+      "task_id": 1,
+      "key": "task1",
+      "name": "Task 1: Coin Navigation",
+      "section_ref": "final_project.pdf \u00a74.1",
+      "scenario": "coin-heaven",
+      "opponents": [],
+      "description": "Collect revealed coins on an open board without crates or opponents.",
+      "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+      "default_rounds": 20
+    },
+    {
+      "task_id": 2,
+      "key": "task2",
+      "name": "Task 2: Crate Clearing & Bomb Safety",
+      "section_ref": "final_project.pdf \u00a74.2",
+      "scenario": "loot-crate",
+      "opponents": [],
+      "description": "Destroy randomly placed crates to uncover and collect hidden coins without killing self.",
+      "focus": "Crate destruction, bomb placement, blast escape, zero suicides",
+      "default_rounds": 20
+    },
+    {
+      "task_id": 3,
+      "key": "task3",
+      "name": "Task 3: Hunting Passive & Collector Enemies",
+      "section_ref": "final_project.pdf \u00a74.3",
+      "scenario": "classic",
+      "opponents": [
+        "peaceful_agent",
+        "coin_collector_agent"
+      ],
+      "description": "Hunt moving targets (peaceful_agent and coin_collector_agent) while evading bombs.",
+      "focus": "Target hunting, opponent kills, coin competition, blast evasion",
+      "default_rounds": 20
+    },
+    {
+      "task_id": 4,
+      "key": "task4",
+      "name": "Task 4: Full Competitive Combat (Tournament)",
+      "section_ref": "final_project.pdf \u00a74.4",
+      "scenario": "classic",
+      "opponents": [
+        "rule_based_agent",
+        "rule_based_agent",
+        "rule_based_agent"
+      ],
+      "description": "Full 4-player official tournament match against 3 strong rule-based agents.",
+      "focus": "Win rate %, combat score, survival %, kills, beating rule_based_agent",
+      "default_rounds": 20
+    }
+  ],
+  "summaries": {
+    "dyna_agent": {},
+    "qwm_agent_veryclean": {}
+  },
+  "head_to_head": {
+    "1v1": {
+      "success": true,
+      "n_rounds": 2,
+      "agent_a": "dyna_agent",
+      "agent_b": "qwm_agent_veryclean",
+      "mode": "1v1",
+      "a_wins": 2,
+      "b_wins": 0,
+      "ties": 0,
+      "a_win_rate": 100.0,
+      "b_win_rate": 0.0,
+      "tie_rate": 0.0,
+      "a_survived_pct": 50.0,
+      "b_survived_pct": 0.0,
+      "a_mean_score": 10.0,
+      "b_mean_score": 3.0,
+      "score_delta": 7.0,
+      "score_delta_ci95": 0.0,
+      "p_value": 1.0,
+      "a_mean_coins": 5.0,
+      "b_mean_coins": 3.0,
+      "a_coin_share_pct": 62.5,
+      "b_coin_share_pct": 37.5,
+      "a_mean_crates": 53.5,
+      "b_mean_crates": 59.5,
+      "a_mean_kills": 1.0,
+      "b_mean_kills": 0.0,
+      "a_direct_kills": 2,
+      "b_direct_kills": 0,
+      "a_suicides": 1,
+      "b_suicides": 0,
+      "verdict": "dyna_agent WINS",
+      "rounds": [
+        {
+          "mode": "1v1",
+          "round_idx": 1,
+          "seed": 1000,
+          "agent_a": "dyna_agent",
+          "agent_b": "qwm_agent_veryclean",
+          "winner": "dyna_agent",
+          "overall_winner": "dyna_agent",
+          "a_stats": {
+            "bombs": 45,
+            "coins": 5,
+            "crates": 63,
+            "dead": false,
+            "got_killed": 0,
+            "invalid": 0,
+            "kills": 1,
+            "moves": 338,
+            "score": 10,
+            "steps": 400,
+            "suicides": 0,
+            "survived": 1,
+            "waited": 17,
+            "won": 1
+          },
+          "b_stats": {
+            "bombs": 31,
+            "coins": 3,
+            "crates": 60,
+            "dead": true,
+            "got_killed": 1,
+            "invalid": 1,
+            "kills": 0,
+            "moves": 212,
+            "score": 3,
+            "steps": 269,
+            "suicides": 0,
+            "survived": 0,
+            "waited": 25,
+            "won": 0
+          },
+          "rule_based_stats": [],
+          "a_killed_b": true,
+          "b_killed_a": false,
+          "slot_order": [
+            "dyna_agent",
+            "qwm_agent_veryclean"
+          ],
+          "steps": 400,
+          "success": true,
+          "error_msg": ""
+        },
+        {
+          "mode": "1v1",
+          "round_idx": 2,
+          "seed": 1031,
+          "agent_a": "dyna_agent",
+          "agent_b": "qwm_agent_veryclean",
+          "winner": "dyna_agent",
+          "overall_winner": "dyna_agent",
+          "a_stats": {
+            "bombs": 28,
+            "coins": 5,
+            "crates": 44,
+            "dead": true,
+            "got_killed": 0,
+            "invalid": 0,
+            "kills": 1,
+            "moves": 188,
+            "score": 10,
+            "steps": 223,
+            "suicides": 1,
+            "survived": 0,
+            "waited": 7,
+            "won": 1
+          },
+          "b_stats": {
+            "bombs": 23,
+            "coins": 3,
+            "crates": 59,
+            "dead": true,
+            "got_killed": 1,
+            "invalid": 1,
+            "kills": 0,
+            "moves": 163,
+            "score": 3,
+            "steps": 212,
+            "suicides": 0,
+            "survived": 0,
+            "waited": 25,
+            "won": 0
+          },
+          "rule_based_stats": [],
+          "a_killed_b": true,
+          "b_killed_a": false,
+          "slot_order": [
+            "qwm_agent_veryclean",
+            "dyna_agent"
+          ],
+          "steps": 223,
+          "success": true,
+          "error_msg": ""
+        }
+      ]
+    },
+    "4p": {
+      "success": true,
+      "n_rounds": 2,
+      "agent_a": "dyna_agent",
+      "agent_b": "qwm_agent_veryclean",
+      "mode": "4p",
+      "a_wins": 1,
+      "b_wins": 1,
+      "ties": 0,
+      "a_win_rate": 50.0,
+      "b_win_rate": 50.0,
+      "tie_rate": 0.0,
+      "a_survived_pct": 0.0,
+      "b_survived_pct": 50.0,
+      "a_mean_score": 1.5,
+      "b_mean_score": 5.0,
+      "score_delta": -3.5,
+      "score_delta_ci95": 8.82,
+      "p_value": 0.5791668483211311,
+      "a_mean_coins": 1.5,
+      "b_mean_coins": 2.5,
+      "a_coin_share_pct": 37.5,
+      "b_coin_share_pct": 62.5,
+      "a_mean_crates": 15.5,
+      "b_mean_crates": 30.5,
+      "a_mean_kills": 0.0,
+      "b_mean_kills": 0.5,
+      "a_direct_kills": 0,
+      "b_direct_kills": 0,
+      "a_suicides": 2,
+      "b_suicides": 1,
+      "verdict": "DEAD EVEN TIE",
+      "rounds": [
+        {
+          "mode": "4p",
+          "round_idx": 1,
+          "seed": 1000,
+          "agent_a": "dyna_agent",
+          "agent_b": "qwm_agent_veryclean",
+          "winner": "qwm_agent_veryclean",
+          "overall_winner": "qwm_agent_veryclean",
+          "a_stats": {
+            "bombs": 5,
+            "coins": 0,
+            "crates": 10,
+            "dead": true,
+            "got_killed": 0,
+            "invalid": 0,
+            "kills": 0,
+            "moves": 31,
+            "score": 0,
+            "steps": 39,
+            "suicides": 1,
+            "survived": 0,
+            "waited": 3,
+            "won": 0
+          },
+          "b_stats": {
+            "bombs": 44,
+            "coins": 3,
+            "crates": 32,
+            "dead": false,
+            "got_killed": 0,
+            "invalid": 6,
+            "kills": 1,
+            "moves": 319,
+            "score": 8,
+            "steps": 400,
+            "suicides": 0,
+            "survived": 1,
+            "waited": 31,
+            "won": 1
+          },
+          "rule_based_stats": [
+            {
+              "name": "rule_based_agent_0",
+              "score": 3,
+              "coins": 3,
+              "kills": 0,
+              "survived": 1,
+              "dead": false
+            },
+            {
+              "name": "rule_based_agent_1",
+              "score": 3,
+              "coins": 3,
+              "kills": 0,
+              "survived": 0,
+              "dead": true
+            }
+          ],
+          "a_killed_b": false,
+          "b_killed_a": false,
+          "slot_order": [
+            "dyna_agent",
+            "qwm_agent_veryclean",
+            "rule_based_agent",
+            "rule_based_agent"
+          ],
+          "steps": 400,
+          "success": true,
+          "error_msg": ""
+        },
+        {
+          "mode": "4p",
+          "round_idx": 2,
+          "seed": 1031,
+          "agent_a": "dyna_agent",
+          "agent_b": "qwm_agent_veryclean",
+          "winner": "dyna_agent",
+          "overall_winner": "tie",
+          "a_stats": {
+            "bombs": 10,
+            "coins": 3,
+            "crates": 21,
+            "dead": true,
+            "got_killed": 0,
+            "invalid": 0,
+            "kills": 0,
+            "moves": 57,
+            "score": 3,
+            "steps": 75,
+            "suicides": 1,
+            "survived": 0,
+            "waited": 8,
+            "won": 1
+          },
+          "b_stats": {
+            "bombs": 32,
+            "coins": 2,
+            "crates": 29,
+            "dead": true,
+            "got_killed": 0,
+            "invalid": 6,
+            "kills": 0,
+            "moves": 292,
+            "score": 2,
+            "steps": 350,
+            "suicides": 1,
+            "survived": 0,
+            "waited": 20,
+            "won": 0
+          },
+          "rule_based_stats": [
+            {
+              "name": "rule_based_agent_0",
+              "score": 1,
+              "coins": 1,
+              "kills": 0,
+              "survived": 1,
+              "dead": false
+            },
+            {
+              "name": "rule_based_agent_1",
+              "score": 3,
+              "coins": 3,
+              "kills": 0,
+              "survived": 1,
+              "dead": false
+            }
+          ],
+          "a_killed_b": false,
+          "b_killed_a": false,
+          "slot_order": [
+            "qwm_agent_veryclean",
+            "dyna_agent",
+            "rule_based_agent",
+            "rule_based_agent"
+          ],
+          "steps": 400,
+          "success": true,
+          "error_msg": ""
+        }
+      ]
+    }
+  }
+}

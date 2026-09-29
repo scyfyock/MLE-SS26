@@ -1,0 +1,9 @@
+agent,task_id,task_key,round,seed,score,won,survived,coins,crates,kills,suicides,got_killed,steps,bombs,waited,moves,invalid
+dyna_agent,1,task1,2,1031,44.0,1,1,44,0,0,0,0,400,20,22,358,0
+dyna_agent,1,task1,1,1000,50.0,1,1,50,0,0,0,0,400,48,25,327,0
+dyna_agent,4,task4,1,1000,0.0,0,0,0,10,0,1,0,39,5,3,31,0
+dyna_agent,4,task4,2,1031,2.0,0,1,2,34,0,0,0,400,46,7,343,4
+qwm_agent_veryclean,1,task1,1,1000,50.0,1,1,50,0,0,0,0,287,0,0,287,0
+qwm_agent_veryclean,1,task1,2,1031,46.0,1,1,46,0,0,0,0,400,0,0,400,0
+qwm_agent_veryclean,4,task4,2,1031,2.0,0,1,2,26,0,0,0,400,42,40,311,7
+qwm_agent_veryclean,4,task4,1,1000,9.0,1,1,4,25,1,0,0,400,38,11,346,5

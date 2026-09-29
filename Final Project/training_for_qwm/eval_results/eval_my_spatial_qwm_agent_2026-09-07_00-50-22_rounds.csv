@@ -1,0 +1,9 @@
+round,agent,won,survived,score,coins,kills,suicides,got_killed,steps,bombs,waited,moves,crates,invalid
+1,my_spatial_qwm_agent,1,0,12,2,2,1,0,234,25,15,191,27,3
+1,rule_based_agent_0,0,0,2,2,0,0,1,161,16,0,138,35,7
+1,rule_based_agent_1,0,0,1,1,0,0,1,66,7,0,57,24,2
+1,rule_based_agent_2,1,1,4,4,0,0,0,257,21,4,228,40,4
+2,my_spatial_qwm_agent,0,0,2,2,0,1,0,94,11,7,76,18,0
+2,rule_based_agent_0,0,1,2,2,0,0,0,400,29,2,357,33,12
+2,rule_based_agent_1,1,1,7,2,1,0,0,400,27,3,360,40,10
+2,rule_based_agent_2,0,0,3,3,0,1,1,197,17,2,167,29,11

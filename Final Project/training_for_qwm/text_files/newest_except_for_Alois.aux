@@ -1,0 +1,90 @@
+\relax 
+\providecommand{\transparent@use}[1]{}
+\citation{dong2026qwm}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Abstract}{1}{}\protected@file@percent }
+\newlabel{sec:0_abstract}{{I}{1}{}{section.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Introduction}{1}{}\protected@file@percent }
+\newlabel{sec:1_introduction}{{II}{1}{}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Background}{1}{}\protected@file@percent }
+\newlabel{sec:2_background}{{III}{1}{}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Q-Learning}{1}{}\protected@file@percent }
+\citation{sutton1990integrated}
+\citation{hafner2023dreamerv3}
+\citation{assran2023ijepa}
+\citation{dong2026qwm}
+\citation{ha2018worldmodels}
+\citation{schrittwieser2020mastering}
+\citation{bachmann2026dynactivationtrainableactivationfamily}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}World Models}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Project Planning}{2}{}\protected@file@percent }
+\newlabel{sec:3_projectplanning}{{IV}{2}{}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Methods}{3}{}\protected@file@percent }
+\newlabel{sec:4_methods}{{V}{3}{}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Methodology for Systematic Testing of Agent Performance}{3}{}\protected@file@percent }
+\newlabel{sec:evaluation_methodology}{{\mbox  {V-A}}{3}{}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}DynaQ Agent}{3}{}\protected@file@percent }
+\newlabel{subsec:DynaQ Methods}{{\mbox  {V-B}}{3}{}{subsection.5.2}{}}
+\newlabel{sec:dyna_method}{{\mbox  {V-B}}{3}{}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}QWM-Agent}{3}{}\protected@file@percent }
+\newlabel{sec:qwm_agent}{{\mbox  {V-C}}{3}{}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Planning with World Models}{3}{}\protected@file@percent }
+\citation{zhang2026hwm}
+\citation{maes2026leworldmodelstableendtoendjointembedding}
+\citation{hafner2023dreamerv3}
+\citation{dong2026qwm}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Latent planning results with pure world model with genetic algorithm and random initial action sequence sampling. Shortened environment time of max. 80 steps and no enemy agents.}}{4}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:pure_planning}{{1}{4}{}{figure.1}{}}
+\citation{dong2026qwm}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Q-Learning with World Models}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}3}Backbone model (Dueling Q-Agent)}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Backbone DQN-Agent architecture.}}{5}{}\protected@file@percent }
+\newlabel{fig:dqn_agent}{{2}{5}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}4}World model}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces World model architecture inserted into the DQN-Agent.}}{6}{}\protected@file@percent }
+\newlabel{fig:world_model}{{3}{6}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}5}Tree-search Planning}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Planning architecture utilizing the DQN-Agent and the World model.}}{7}{}\protected@file@percent }
+\newlabel{fig:planning}{{4}{7}{}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Latent world model prediction error (MAE and RMSE) across recursive rollout horizons $H=1$ through $8$ on held-out validation trajectories. Compounding drift degrades value accuracy beyond $H>5$.}}{8}{}\protected@file@percent }
+\newlabel{fig:world_model_horizon_error}{{5}{8}{}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Systematic planning horizon sweep ($D=1\dots  10$) across 1,000 rounds per depth on matched random seeds. (a) Competitive score and win rate stay high across $D=5\dots  7$, with $D=7$ chosen by Optuna for long-term evaluations. (b) Decision latency scales from 34.5 ms to 87.9 ms, remaining well within the 500 ms limit.}}{8}{}\protected@file@percent }
+\newlabel{fig:qwm_depth_sweep}{{6}{8}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Training}{8}{}\protected@file@percent }
+\newlabel{sec:5_training}{{VI}{8}{}{section.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Training performance for DynaQ in the classic scenario evaluated against three rule-based agents. The blue line represents the DynaQ agent that was trained against only rule-based agents in the classic scenario. At 15,000 training rounds the orange branch diverges from the blue line and is instead trained against a static version of itself, the QWM agent, and one rule-based agent in the classic scenario. Across the 20 training checkpoints, each was run for 800 evaluation rounds split between two RNG seeds. The error bars represent 95\% confidence intervals.}}{8}{}\protected@file@percent }
+\newlabel{DynaQ Classic Scenario Training Curves}{{7}{8}{}{figure.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}DynaQ Training}{8}{}\protected@file@percent }
+\newlabel{subsec:DynaQ Training}{{\mbox  {VI-A}}{8}{}{subsection.6.1}{}}
+\citation{ng1999policy}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Spatial DQN and QWM Training}{11}{}\protected@file@percent }
+\newlabel{subsec:qwm_training}{{\mbox  {VI-B}}{11}{}{subsection.6.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Curriculum training progression for the standalone Spatial Dueling DQN across 12,800 rounds. (a) Mean score per round (smoothed over 100 rounds) across four curriculum stages. (b) Bellman TD error convergence and exploration rate $\epsilon $ decay schedule. (c) Survival rate versus suicide rate, showing the collapse in survival during Stage 4 combat due to the absence of temporal lookahead.}}{11}{}\protected@file@percent }
+\newlabel{fig:dqn_training_curve}{{8}{11}{}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Training progression for the Spatial QWM agent across Stage 0 warmup (900 rounds with frozen DQN) and Stages 1--7 joint curriculum (12,000 rounds). (a) Latent world model transition residual loss $\Delta z$ and reward prediction loss. (b) Task score and win rate. (c) Survival and suicide rates, demonstrating consistent survival above 60\% in competitive combat.}}{11}{}\protected@file@percent }
+\newlabel{fig:qwm_training_curve}{{9}{11}{}{figure.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Breakdown of the different schemas of the DynaQ Agent. Evaluation was done across 800 rounds, 400 rounds on one seed and 400 on another seed and the results averaged. Schemas were evaluated against three rule-based agents in the classic scenario. Q-states represent entries in the Q-table, while score, steps, coins, crates, bombs, and kills are per round means. Suicides are across all rounds. Rule-based scores are the mean score of the rule-based agents each schema battles against. Intervals are 95\% confidence intervals. Schema 3 has no bomb action in its action set.}}{12}{}\protected@file@percent }
+\newlabel{tab:DynaQ Schema Comparison}{{I}{12}{}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Experiments and Results}{12}{}\protected@file@percent }
+\newlabel{sec:6_experimentsandresults}{{VII}{12}{}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}DynaQ Results}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Staged Task Evaluation}{13}{}\protected@file@percent }
+\newlabel{sec:staged_results}{{\mbox  {VII-B}}{13}{}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-C}}DynaQ vs QWM Comparison}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-D}}Ablation Study: Standalone Spatial DQN vs.\ Spatial QWM}{13}{}\protected@file@percent }
+\newlabel{subsec:spatial_dqn_ablation}{{\mbox  {VII-D}}{13}{}{subsection.7.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Ablation comparison between standalone Spatial Dueling DQN (greedy policy, no planning) and Spatial QWM ($D=7$ top-$K$ beam search, Optuna selected) across 4-player competitive combat against three rule-based agents over matched benchmark rounds.}}{14}{}\protected@file@percent }
+\newlabel{tab:dqn_vs_qwm_ablation}{{II}{14}{}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Conclusion}{14}{}\protected@file@percent }
+\newlabel{sec:7_conclusion}{{VIII}{14}{}{section.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Primary and efficiency metrics per task and goal, for DynaQ and QWM. Passive opponents are games with only DynaQ/QWM against all peaceful agents. Competitive combat is games against three rule-based agents. }}{14}{}\protected@file@percent }
+\newlabel{tab:Primary and Efficiency Metrics per task for DynaQ and QWM}{{III}{14}{}{table.3}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Each figure is averaged over 1000 rounds. Win\% is the percentage of rounds in which the agent achieved the highest score; Surv\% the percentage in which it lived until the end of the round. Coins, crates and kills are per round means. Suicides are round counts. Passive and collector opponents is evaluating against peaceful agents and coin collector agents, while competitive combat is evaluating against all rule-based agents.}}{15}{}\protected@file@percent }
+\newlabel{DynaQ and QWM Comparison on Four Tasks}{{IV}{15}{}{table.4}{}}
+\newlabel{tab:staged_tasks}{{IV}{15}{}{table.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Direct head-to-head competition between candidate models on identical matched random seeds over 1000 rounds, with alternating starting slot positions to guarantee symmetric fairness. Metrics for a one versus one duel between DynaQ and QWM and metrics for a duel between DynaQ and QWM with two rule-based agents also on the field. QWM has a slight edge over DynaQ, though as shown by the p-value it is not significant. However, QWM is clearly better on number of suicides and its survival rate.}}{15}{}\protected@file@percent }
+\newlabel{tab:DynaQ vs QWM Comparison tournament/duel}{{V}{15}{}{table.5}{}}
+\gdef\svg@ink@ver@settings{{\m@ne }{inkscape}{\m@ne }}
+\gdef \@abspage@last{15}

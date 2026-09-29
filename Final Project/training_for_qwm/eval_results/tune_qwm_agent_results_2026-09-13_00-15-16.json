@@ -1,0 +1,235 @@
+{
+  "agent": "qwm_agent",
+  "eval_res": {
+    "ranked_candidates": [
+      {
+        "candidate": {
+          "name": "Optuna-002",
+          "search_depth": 4,
+          "beam_size": 48,
+          "tree_discount": 0.31,
+          "alpha_vq": 0.5900000000000001,
+          "description": "D=4, B=48, \u03bb=0.31, \u03b1=0.59"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 0,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 0.0,
+            "mean_coins": 0.0,
+            "mean_kills": 0.0,
+            "mean_crates": 0.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 0.0,
+            "per_seed": {}
+          }
+        },
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      },
+      {
+        "candidate": {
+          "name": "Optuna-000",
+          "search_depth": 4,
+          "beam_size": 48,
+          "tree_discount": 0.31,
+          "alpha_vq": 0.5900000000000001,
+          "description": "D=4, B=48, \u03bb=0.31, \u03b1=0.59"
+        },
+        "scenarios": {},
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      },
+      {
+        "candidate": {
+          "name": "Optuna-001",
+          "search_depth": 2,
+          "beam_size": 12,
+          "tree_discount": 0.07,
+          "alpha_vq": 0.8300000000000001,
+          "description": "D=2, B=12, \u03bb=0.07, \u03b1=0.83"
+        },
+        "scenarios": {},
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      }
+    ],
+    "summary_by_cand": {
+      "Optuna-002": {
+        "candidate": {
+          "name": "Optuna-002",
+          "search_depth": 4,
+          "beam_size": 48,
+          "tree_discount": 0.31,
+          "alpha_vq": 0.5900000000000001,
+          "description": "D=4, B=48, \u03bb=0.31, \u03b1=0.59"
+        },
+        "scenarios": {
+          "classic_combat": {
+            "n_matches": 0,
+            "win_rate": 0.0,
+            "survival_rate": 0.0,
+            "mean_score": 0.0,
+            "mean_coins": 0.0,
+            "mean_kills": 0.0,
+            "mean_crates": 0.0,
+            "mean_think_ms": 0.0,
+            "scenario_utility": 0.0,
+            "per_seed": {}
+          }
+        },
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      },
+      "Optuna-000": {
+        "candidate": {
+          "name": "Optuna-000",
+          "search_depth": 4,
+          "beam_size": 48,
+          "tree_discount": 0.31,
+          "alpha_vq": 0.5900000000000001,
+          "description": "D=4, B=48, \u03bb=0.31, \u03b1=0.59"
+        },
+        "scenarios": {},
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      },
+      "Optuna-001": {
+        "candidate": {
+          "name": "Optuna-001",
+          "search_depth": 2,
+          "beam_size": 12,
+          "tree_discount": 0.07,
+          "alpha_vq": 0.8300000000000001,
+          "description": "D=2, B=12, \u03bb=0.07, \u03b1=0.83"
+        },
+        "scenarios": {},
+        "overall_score": 0.0,
+        "overall_win_rate": 0.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 0.0,
+        "overall_coins": 0.0,
+        "overall_kills": 0.0,
+        "overall_think_time_ms": 0.0,
+        "n_matches": 0,
+        "paired_vs_baseline": {
+          "baseline": "Optuna-002",
+          "matched_rounds": 0,
+          "paired_wins": 0,
+          "paired_ties": 0,
+          "paired_losses": 0,
+          "mean_delta_score": 0.0
+        }
+      }
+    },
+    "scenarios": [
+      {
+        "key": "classic_combat",
+        "display_name": "Classic vs 3x Rule-Based",
+        "scenario": "classic",
+        "opponents": [
+          "rule_based_agent",
+          "rule_based_agent",
+          "rule_based_agent"
+        ],
+        "weight": 1.5
+      }
+    ],
+    "seeds": [
+      1000
+    ],
+    "checkpoint_path": "/home/tobitoyota/Desktop/bomberman_rl/agent_code/qwm_agent/my-saved-model-spatial-qwm.pt",
+    "total_matches": 1,
+    "elapsed_seconds": 5.792891979217529,
+    "strategy": "optuna",
+    "storage": "sqlite:////home/tobitoyota/Desktop/bomberman_rl/agent_code/qwm_agent/optuna_study.db",
+    "study_name": "qwm_agent_inference_tuning",
+    "best_params": {
+      "search_depth": 4,
+      "beam_size": 48,
+      "tree_discount": 0.31,
+      "alpha_vq": 0.5900000000000001
+    }
+  },
+  "h2h_res": null,
+  "winning_candidate": {
+    "name": "Optuna-002",
+    "search_depth": 4,
+    "beam_size": 48,
+    "tree_discount": 0.31,
+    "alpha_vq": 0.5900000000000001,
+    "description": "D=4, B=48, \u03bb=0.31, \u03b1=0.59"
+  },
+  "timestamp": "2026-09-13_00-15-16"
+}

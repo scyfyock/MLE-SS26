@@ -1,8 +1,21 @@
 import os
 import pickle
 import random
+<<<<<<< HEAD
+import sys
 from collections import deque
 
+import agent_code.world_model_agent as _wma
+sys.modules.setdefault("agent_code.world_model_agent_cf", _wma)
+import agent_code.world_model_agent.world_model as _wm_mod
+sys.modules.setdefault("agent_code.world_model_agent_cf.world_model", _wm_mod)
+import agent_code.world_model_agent.q_network as _qn_mod
+sys.modules.setdefault("agent_code.world_model_agent_cf.q_network", _qn_mod)
+
+=======
+from collections import deque
+
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
 import numpy as np
 import settings as s
 
@@ -105,8 +118,17 @@ def bomb_outcome_adjustment(world_model, state):
     )
     return float(adjustment), prediction
 
+<<<<<<< HEAD
+_SAVED_MODEL_CACHE = None
+
+
 def setup(self):
     """Load an existing Dyna agent or initialize a neural Q-function."""
+    global _SAVED_MODEL_CACHE
+=======
+def setup(self):
+    """Load an existing Dyna agent or initialize a neural Q-function."""
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
 
     # generate a random number generator with a fixed seed for reproducibility
     self.action_rng = random.Random(0)
@@ -120,8 +142,19 @@ def setup(self):
     if os.path.isfile(MODEL_FILE):
         self.logger.info("Loading existing Dyna model.")
 
+<<<<<<< HEAD
+        is_eval = not getattr(self, "train", False)
+        if is_eval and _SAVED_MODEL_CACHE is not None:
+            saved_data = _SAVED_MODEL_CACHE
+        else:
+            with open(MODEL_FILE, "rb") as file:
+                saved_data = pickle.load(file)
+            if is_eval:
+                _SAVED_MODEL_CACHE = saved_data
+=======
         with open(MODEL_FILE, "rb") as file:
             saved_data = pickle.load(file)
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
 
         saved_version = saved_data.get("model_schema_version", 1)
 
@@ -142,6 +175,15 @@ def setup(self):
         if hasattr(self.world_model, "ensure_opponent_model_state"):
             self.world_model.ensure_opponent_model_state()
         self.epsilon = saved_data.get("epsilon", self.epsilon)
+<<<<<<< HEAD
+
+        if is_eval:
+            if hasattr(self.world_model, "attach_accelerator"):
+                self.world_model.attach_accelerator()
+            if hasattr(self.q_network, "attach_accelerator"):
+                self.q_network.attach_accelerator()
+=======
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
     else:
         self.logger.info("Initializing a fresh Double-DQN policy.")
 
@@ -206,9 +248,31 @@ def act(self, game_state: dict) -> str:
             weights=exploration_weights,
             k=1,
         )[0]
+<<<<<<< HEAD
+    # Optional Genetic Algorithm lookahead planning
+    use_ga = getattr(self, "use_ga_planner", False) or (
+        os.environ.get("USE_GA_PLANNER", "0").lower() in ("1", "true", "yes")
+    )
+    if use_ga and world_model is not None and getattr(world_model, "is_ready", False):
+        if not hasattr(self, "ga_planner"):
+            from .genetic_planner import GeneticAlgorithmPlanner, GeneticPlannerConfig
+            cfg = getattr(self, "ga_config", None) or GeneticPlannerConfig(
+                horizon=int(os.environ.get("GA_HORIZON", "3")),
+                pop_size=int(os.environ.get("GA_POP_SIZE", "10")),
+                generations=int(os.environ.get("GA_GENERATIONS", "3")),
+                mutation_rate=float(os.environ.get("GA_MUTATION_RATE", "0.25")),
+            )
+            self.ga_planner = GeneticAlgorithmPlanner(world_model, cfg)
+        action, seq, fitness, stats = self.ga_planner.plan(
+            game_state, valid_actions, q_values=q_values
+        )
+        self.logger.debug(
+            f"GA planner selected {action} (seq={seq}, fit={fitness:.3f}, {stats.elapsed_ms:.1f}ms)"
+=======
         self.logger.debug(
             f"Risk-aware exploration selected {action}; "
             f"death_risks={death_risks}."
+>>>>>>> 13f08497d2d317be71d996ec02ebfd1d70c8bb48
         )
         return action
 

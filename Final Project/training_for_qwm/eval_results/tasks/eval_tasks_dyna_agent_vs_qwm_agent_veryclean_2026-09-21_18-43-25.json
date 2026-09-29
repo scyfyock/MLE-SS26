@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-09-21_18-43-25",
+  "duration_seconds": 4.267393589019775,
+  "agents": [
+    "dyna_agent",
+    "qwm_agent_veryclean"
+  ],
+  "tasks": [
+    {
+      "task_id": 1,
+      "key": "task1",
+      "name": "Task 1: Coin Navigation",
+      "section_ref": "final_project.pdf \u00a74.1",
+      "scenario": "coin-heaven",
+      "opponents": [],
+      "description": "Collect revealed coins on an open board without crates or opponents.",
+      "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+      "default_rounds": 20
+    }
+  ],
+  "summaries": {
+    "dyna_agent": {
+      "task1": {
+        "task": {
+          "task_id": 1,
+          "key": "task1",
+          "name": "Task 1: Coin Navigation",
+          "section_ref": "final_project.pdf \u00a74.1",
+          "scenario": "coin-heaven",
+          "opponents": [],
+          "description": "Collect revealed coins on an open board without crates or opponents.",
+          "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+          "default_rounds": 20
+        },
+        "n_rounds": 1,
+        "grade": "A+",
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 100.0,
+        "overall_mean_score": 50.0,
+        "score_std": 0.0,
+        "overall_coins": 50.0,
+        "overall_crates": 0.0,
+        "overall_kills": 0.0,
+        "overall_suicides": 0,
+        "overall_got_killed": 0,
+        "overall_steps": 400.0,
+        "overall_bombs": 48.0,
+        "overall_waited_pct": 6.25,
+        "overall_invalid_pct": 0.0,
+        "kpis": {
+          "mean_coins": 50.0,
+          "coins_std": 0.0,
+          "steps_per_coin": 8.0,
+          "wait_pct": 6.25,
+          "invalid_pct": 0.0,
+          "bombs_dropped": 48,
+          "speed_rating": "8.0 steps/coin"
+        },
+        "rounds": [
+          {
+            "agent_name": "dyna_agent",
+            "task_id": 1,
+            "task_key": "task1",
+            "round_idx": 1,
+            "seed": 1000,
+            "score": 50.0,
+            "won": true,
+            "survived": true,
+            "coins": 50,
+            "crates": 0,
+            "kills": 0,
+            "suicides": 0,
+            "got_killed": 0,
+            "steps": 400,
+            "bombs": 48,
+            "waited": 25,
+            "moves": 327,
+            "invalid": 0,
+            "peaceful_kills": 0,
+            "collector_kills": 0,
+            "rule_based_kills": 0,
+            "other_agents": [],
+            "success": true,
+            "error_msg": ""
+          }
+        ],
+        "success": true
+      }
+    },
+    "qwm_agent_veryclean": {
+      "task1": {
+        "task": {
+          "task_id": 1,
+          "key": "task1",
+          "name": "Task 1: Coin Navigation",
+          "section_ref": "final_project.pdf \u00a74.1",
+          "scenario": "coin-heaven",
+          "opponents": [],
+          "description": "Collect revealed coins on an open board without crates or opponents.",
+          "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+          "default_rounds": 20
+        },
+        "n_rounds": 1,
+        "grade": "C",
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 0.0,
+        "overall_mean_score": 17.0,
+        "score_std": 0.0,
+        "overall_coins": 17.0,
+        "overall_crates": 0.0,
+        "overall_kills": 0.0,
+        "overall_suicides": 1,
+        "overall_got_killed": 0,
+        "overall_steps": 70.0,
+        "overall_bombs": 1.0,
+        "overall_waited_pct": 1.4285714285714286,
+        "overall_invalid_pct": 0.0,
+        "kpis": {
+          "mean_coins": 17.0,
+          "coins_std": 0.0,
+          "steps_per_coin": 4.117647058823529,
+          "wait_pct": 1.4285714285714286,
+          "invalid_pct": 0.0,
+          "bombs_dropped": 1,
+          "speed_rating": "4.1 steps/coin"
+        },
+        "rounds": [
+          {
+            "agent_name": "qwm_agent_veryclean",
+            "task_id": 1,
+            "task_key": "task1",
+            "round_idx": 1,
+            "seed": 1000,
+            "score": 17.0,
+            "won": true,
+            "survived": false,
+            "coins": 17,
+            "crates": 0,
+            "kills": 0,
+            "suicides": 1,
+            "got_killed": 0,
+            "steps": 70,
+            "bombs": 1,
+            "waited": 1,
+            "moves": 68,
+            "invalid": 0,
+            "peaceful_kills": 0,
+            "collector_kills": 0,
+            "rule_based_kills": 0,
+            "other_agents": [],
+            "success": true,
+            "error_msg": ""
+          }
+        ],
+        "success": true
+      }
+    }
+  }
+}

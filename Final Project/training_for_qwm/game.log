@@ -1,0 +1,26 @@
+2026-09-07 10:40:06,284 [BombeRLeWorld] INFO: Initializing game world
+2026-09-07 10:40:07,455 [BombeRLeWorld] INFO: STARTING ROUND #1
+2026-09-07 10:40:08,786 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action UP in 1.33s.
+2026-09-07 10:40:08,786 [BombeRLeWorld] WARNING: Agent <my_spatial_qwm_agent> exceeded think time by 0.83s. Setting action to "WAIT" and decreasing available time for next round to -0.33s.
+2026-09-07 10:40:08,786 [BombeRLeWorld] INFO: STARTING STEP 1
+2026-09-07 10:40:08,786 [BombeRLeWorld] INFO: Skipping agent <my_spatial_qwm_agent> because of last slow think time.
+2026-09-07 10:40:08,815 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action UP in 0.03s.
+2026-09-07 10:40:08,815 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,815 [BombeRLeWorld] INFO: STARTING STEP 2
+2026-09-07 10:40:08,834 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action DOWN in 0.02s.
+2026-09-07 10:40:08,834 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,863 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action UP in 0.03s.
+2026-09-07 10:40:08,863 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,863 [BombeRLeWorld] INFO: STARTING STEP 3
+2026-09-07 10:40:08,895 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action DOWN in 0.03s.
+2026-09-07 10:40:08,895 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,921 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action UP in 0.03s.
+2026-09-07 10:40:08,921 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,921 [BombeRLeWorld] INFO: STARTING STEP 4
+2026-09-07 10:40:08,948 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action DOWN in 0.03s.
+2026-09-07 10:40:08,949 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,971 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action UP in 0.02s.
+2026-09-07 10:40:08,971 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.
+2026-09-07 10:40:08,971 [BombeRLeWorld] INFO: STARTING STEP 5
+2026-09-07 10:40:08,990 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> chose action DOWN in 0.02s.
+2026-09-07 10:40:08,990 [BombeRLeWorld] INFO: Agent <my_spatial_qwm_agent> stayed within acceptable think time.

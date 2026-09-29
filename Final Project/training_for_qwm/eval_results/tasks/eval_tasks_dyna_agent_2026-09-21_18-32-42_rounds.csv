@@ -1,0 +1,2 @@
+agent,task_id,task_key,round,seed,score,won,survived,coins,crates,kills,suicides,got_killed,steps,bombs,waited,moves,invalid
+dyna_agent,1,task1,1,1000,50.0,1,1,50,0,0,0,0,400,48,25,327,0

@@ -1,0 +1,169 @@
+{
+  "timestamp": "2026-09-21_19-18-35",
+  "duration_seconds": 16.40095543861389,
+  "agents": [
+    "qwm_agent_veryclean"
+  ],
+  "tasks": [
+    {
+      "task_id": 1,
+      "key": "task1",
+      "name": "Task 1: Coin Navigation",
+      "section_ref": "final_project.pdf \u00a74.1",
+      "scenario": "coin-heaven",
+      "opponents": [],
+      "description": "Collect revealed coins on an open board without crates or opponents.",
+      "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+      "default_rounds": 20
+    },
+    {
+      "task_id": 2,
+      "key": "task2",
+      "name": "Task 2: Crate Clearing & Bomb Safety",
+      "section_ref": "final_project.pdf \u00a74.2",
+      "scenario": "loot-crate",
+      "opponents": [],
+      "description": "Destroy randomly placed crates to uncover and collect hidden coins without killing self.",
+      "focus": "Crate destruction, bomb placement, blast escape, zero suicides",
+      "default_rounds": 20
+    }
+  ],
+  "summaries": {
+    "qwm_agent_veryclean": {
+      "task1": {
+        "task": {
+          "task_id": 1,
+          "key": "task1",
+          "name": "Task 1: Coin Navigation",
+          "section_ref": "final_project.pdf \u00a74.1",
+          "scenario": "coin-heaven",
+          "opponents": [],
+          "description": "Collect revealed coins on an open board without crates or opponents.",
+          "focus": "Navigation speed, coin collection rate, steps per coin, zero waiting",
+          "default_rounds": 20
+        },
+        "n_rounds": 1,
+        "grade": "A+",
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 100.0,
+        "overall_mean_score": 50.0,
+        "score_std": 0.0,
+        "overall_coins": 50.0,
+        "overall_crates": 0.0,
+        "overall_kills": 0.0,
+        "overall_suicides": 0,
+        "overall_got_killed": 0,
+        "overall_steps": 287.0,
+        "overall_bombs": 0.0,
+        "overall_waited_pct": 0.0,
+        "overall_invalid_pct": 0.0,
+        "kpis": {
+          "mean_coins": 50.0,
+          "coins_std": 0.0,
+          "steps_per_coin": 5.74,
+          "wait_pct": 0.0,
+          "invalid_pct": 0.0,
+          "bombs_dropped": 0,
+          "speed_rating": "5.7 steps/coin"
+        },
+        "rounds": [
+          {
+            "agent_name": "qwm_agent_veryclean",
+            "task_id": 1,
+            "task_key": "task1",
+            "round_idx": 1,
+            "seed": 1000,
+            "score": 50.0,
+            "won": true,
+            "survived": true,
+            "coins": 50,
+            "crates": 0,
+            "kills": 0,
+            "suicides": 0,
+            "got_killed": 0,
+            "steps": 287,
+            "bombs": 0,
+            "waited": 0,
+            "moves": 287,
+            "invalid": 0,
+            "peaceful_kills": 0,
+            "collector_kills": 0,
+            "rule_based_kills": 0,
+            "other_agents": [],
+            "success": true,
+            "error_msg": ""
+          }
+        ],
+        "success": true
+      },
+      "task2": {
+        "task": {
+          "task_id": 2,
+          "key": "task2",
+          "name": "Task 2: Crate Clearing & Bomb Safety",
+          "section_ref": "final_project.pdf \u00a74.2",
+          "scenario": "loot-crate",
+          "opponents": [],
+          "description": "Destroy randomly placed crates to uncover and collect hidden coins without killing self.",
+          "focus": "Crate destruction, bomb placement, blast escape, zero suicides",
+          "default_rounds": 20
+        },
+        "n_rounds": 1,
+        "grade": "A+",
+        "overall_win_rate": 100.0,
+        "overall_survival_rate": 100.0,
+        "overall_mean_score": 33.0,
+        "score_std": 0.0,
+        "overall_coins": 33.0,
+        "overall_crates": 92.0,
+        "overall_kills": 0.0,
+        "overall_suicides": 0,
+        "overall_got_killed": 0,
+        "overall_steps": 400.0,
+        "overall_bombs": 40.0,
+        "overall_waited_pct": 4.5,
+        "overall_invalid_pct": 0.0,
+        "kpis": {
+          "mean_crates": 92.0,
+          "crates_std": 0.0,
+          "mean_coins": 33.0,
+          "crates_per_bomb": 2.3,
+          "total_suicides": 0,
+          "suicides_per_round": 0.0,
+          "survival_rate_pct": 100.0,
+          "safety_rating": "Zero Suicides (Safe)"
+        },
+        "rounds": [
+          {
+            "agent_name": "qwm_agent_veryclean",
+            "task_id": 2,
+            "task_key": "task2",
+            "round_idx": 1,
+            "seed": 1000,
+            "score": 33.0,
+            "won": true,
+            "survived": true,
+            "coins": 33,
+            "crates": 92,
+            "kills": 0,
+            "suicides": 0,
+            "got_killed": 0,
+            "steps": 400,
+            "bombs": 40,
+            "waited": 18,
+            "moves": 342,
+            "invalid": 0,
+            "peaceful_kills": 0,
+            "collector_kills": 0,
+            "rule_based_kills": 0,
+            "other_agents": [],
+            "success": true,
+            "error_msg": ""
+          }
+        ],
+        "success": true
+      }
+    }
+  },
+  "head_to_head": {}
+}

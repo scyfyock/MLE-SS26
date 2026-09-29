@@ -1,0 +1,5 @@
+agent,task_id,task_key,round,seed,score,won,survived,coins,crates,kills,suicides,got_killed,steps,bombs,waited,moves,invalid
+qwm_agent_clean,1,task1,1,1000,50.0,1,1,50,0,0,0,0,328,8,1,319,0
+qwm_agent_clean,2,task2,1,1000,35.0,1,1,35,108,0,0,0,400,47,16,337,0
+qwm_agent_clean,3,task3,1,1000,11.0,1,1,6,74,1,0,0,400,44,11,345,0
+qwm_agent_clean,4,task4,1,1000,4.0,1,1,4,29,0,0,0,400,42,23,334,1

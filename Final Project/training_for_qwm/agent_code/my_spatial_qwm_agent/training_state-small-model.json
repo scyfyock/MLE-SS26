@@ -1,0 +1,14 @@
+{
+  "run_dir": "/home/tobitoyota/Desktop/bomberman_rl/agent_code/my_spatial_qwm_agent/runs/run_2026-09-21_15-51-05_small_model",
+  "phase": "phase2_s7_vs_mixed_classic",
+  "completed_rounds": 240,
+  "stage_rounds": 10,
+  "stage_total_rounds": 10,
+  "recent_win_rate": 0.2,
+  "recent_survival_rate": 0.5,
+  "recent_mean_score": 2.9,
+  "best_eval_metric": 75.99999999999999,
+  "model_parameters": 5893,
+  "model_architecture": "Sequential(\n  (0): Linear(in_features=56, out_features=64, bias=True)\n  (1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)\n  (2): DynActivation()\n  (3): Linear(in_features=64, out_features=32, bias=True)\n  (4): DynActivation()\n  (5): Linear(in_features=32, out_features=1, bias=True)\n)",
+  "last_updated": "2026-09-21T16:08:15.211155"
+}

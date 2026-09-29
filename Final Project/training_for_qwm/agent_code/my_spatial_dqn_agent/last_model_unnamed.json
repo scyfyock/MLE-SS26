@@ -1,0 +1,10 @@
+{
+  "round": 1,
+  "stage": "unnamed",
+  "score": 0,
+  "sum_reward": -34.8,
+  "survived": 0,
+  "steps": 24,
+  "epsilon": 0.9995,
+  "wall_time_s": 2.52
+}
