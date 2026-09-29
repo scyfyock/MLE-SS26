@@ -26,11 +26,11 @@ and comes at the cost of a much longer inference time.
 
 # Bomberman RL – QWM Agent
 
-The QWM agnet is located under the qwm_training_code folder within the Final Project
+The QWM agent is located under the training_for_qwm folder within the Final Project
 folder.
 
 # Bomberman RL – DynaQ Agent
 
-The DynaQ agent is located under the dyna_agent folder within the Final Project folder.
-The different schema versions are labeled under dyna_agent_schema3 and 
-dyna_agent_schema7.
+The DynaQ agent is located under the dyna_agent folder within the 
+Final Project/agent_code folder. The different schema versions are labeled 
+under dyna_agent_schema3 and dyna_agent_schema7.
