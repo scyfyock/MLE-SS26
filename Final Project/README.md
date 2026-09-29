@@ -1,3 +1,8 @@
+# DynaQ Agent
+
+The DynaQ agent is located under the dyna_agent folder. The different schema version
+are labeled under dyna_agent_schema3 and dyna_agent_schema7.
+
 # Bomberman RL – World-Model-Agent
 
 Dieses Projekt erweitert das bereitgestellte Bomberman-Framework um einen

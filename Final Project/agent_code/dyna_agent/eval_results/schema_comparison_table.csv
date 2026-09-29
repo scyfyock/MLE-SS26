@@ -1,0 +1,4 @@
+schema,agent,q_states,n_rounds,seeds,score,score_ci95,rule_based_score,rule_based_ci95,win_rate,win_rate_ci95,steps,steps_ci95,coins,crates,bombs,kills,suicides
+Schema 3,dyna_agent_schema3,522,800,123+7,0.22,0.036,5.1188,0.0677,0.0,0.0,124.8,4.0,0.22,0,0,0,0
+Schema 7,dyna_agent_schema7,3490,800,123+7,2.47,0.1507,3.8158,0.0959,0.1087,0.0216,100.89,3.87,2.064,22.12,10.53,0.0813,372
+Schema 12,dyna_agent,8730,800,123+7,3.6587,0.1986,2.9667,0.0874,0.27,0.0308,271.62,10.12,2.54,31.57,30.81,0.2238,334
